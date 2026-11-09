@@ -1,4 +1,4 @@
-<p align="center"><img src="luci-app-usque/htdocs/luci-static/usque/logo.svg" width="88" height="88" alt="Usque"></p>
+<p align="center"><img src="https://raw.githubusercontent.com/kenzok8/kenzok8/main/screenshot/usque/usque-logo.png" width="88" height="88" alt="Usque"></p>
 <h1 align="center">Usque for OpenWrt</h1>
 <p align="center">看清 WARP 连接，掌握流量去向。</p>
 <p align="center">
@@ -61,29 +61,24 @@
 - **网络资源有归属**：拒绝占用其他程序的策略表、标记或防火墙配置，停止时按启动快照回收。
 - **轻量界面**：原生 LuCI，无 Node 前端运行依赖，无在线字体，支持手机和宿主主题。
 
-## 界面
+## 界面预览
 
-四个页面，各自独立：
-
-| 页面 | 内容 |
-| --- | --- |
-| 概览 | 账号与运行状态、启动/停止/重启、连接检测（WARP 与 YouTube 经隧道、字节跳动直连作对照，三行分别看延迟与信号格）、哪些流量会走 WARP |
-| 设置 | 模式、监听地址与端口、TUN 与 LAN 接管、局域网 DNS、注册设备名 |
-| 日志 | 系统日志里与 Usque 相关的行，可自动刷新 |
-| 更新 | 已安装版本与软件源里的版本的对比，从 kenzok8 软件源升级 |
-
-
-以下截图来自隔离 OpenWrt 的实际 LuCI 页面，不代表已注册 Cloudflare 或完成 WARP 联网验收。
-
-![Usque 主界面](docs/assets/overview.png)
-
-<details><summary>TUN 配置与手机界面</summary>
-
-![TUN 设置](docs/assets/tun.png)
-
-<img src="docs/assets/mobile.png" width="375" alt="Usque 手机界面">
-
+<details open>
+<summary><b>桌面截图</b></summary>
+<br>
+<table>
+<tr>
+<td align="center"><b>概览</b><br><img width="420" src="https://raw.githubusercontent.com/kenzok8/kenzok8/main/screenshot/usque/usque-overview.png"></td>
+<td align="center"><b>设置</b><br><img width="420" src="https://raw.githubusercontent.com/kenzok8/kenzok8/main/screenshot/usque/usque-settings.png"></td>
+</tr>
+<tr>
+<td align="center"><b>日志</b><br><img width="420" src="https://raw.githubusercontent.com/kenzok8/kenzok8/main/screenshot/usque/usque-logs.png"></td>
+<td align="center"><b>更新</b><br><img width="420" src="https://raw.githubusercontent.com/kenzok8/kenzok8/main/screenshot/usque/usque-updates.png"></td>
+</tr>
+</table>
 </details>
+
+截图取自实际运行的 LuCI 页面，不代表已完成 SDK 打包验收。
 
 ## 安装与构建
 
