@@ -56,10 +56,13 @@ return view.extend({
 		var self = this;
 		if (self.probeRows) {
 			Object.keys(self.probeRows).forEach(function (key) {
-				var row = self.probeRows[key];
+				var row = self.probeRows[key],
+					bars = row.querySelector('.usque-bars');
 				row.dataset.state = 'idle';
 				row.dataset.level = '0';
-				row.querySelector('.usque-probe-value').textContent = _('Not tested');
+				row.title = '';
+				bars.title = '';
+				bars.setAttribute('aria-label', '');
 			});
 		}
 		if (self.probeNote) self.probeNote.textContent = note || '';
@@ -71,21 +74,14 @@ return view.extend({
 		(result.targets || []).forEach(function (target) {
 			var row = self.probeRows[target.id];
 			if (!row) return;
-			var ok = !!target.ok;
+			var ok = !!target.ok,
+				bars = row.querySelector('.usque-bars'),
+				hint = ok ? (target.ms ? target.ms + ' ms' : _('OK')) : _('Failed');
 			row.dataset.state = ok ? 'pass' : 'fail';
 			row.dataset.level = String(self.probeLevel(ok, target.ms));
-			var value;
-			if (target.id === 'warp')
-				value =
-					target.code === 'plus'
-						? 'WARP+'
-						: target.code === 'on'
-							? _('WARP')
-							: target.code === 'off'
-								? _('Not through WARP')
-								: _('Failed');
-			else value = ok ? (target.ms ? target.ms + ' ms' : _('OK')) : _('Failed');
-			row.querySelector('.usque-probe-value').textContent = value;
+			row.title = hint;
+			bars.title = hint;
+			bars.setAttribute('aria-label', hint);
 		});
 		var passed = result.warp === 'on' || result.warp === 'plus';
 		var note = result.error
@@ -328,8 +324,12 @@ return view.extend({
 			return E('div', { class: 'usque-probe-row', 'data-id': id, 'data-state': 'idle' }, [
 				E('span', { class: 'usque-probe-icon', 'data-id': id, 'aria-hidden': 'true' }),
 				E('span', { class: 'usque-probe-name' }, label),
-				E('span', { class: 'usque-bars', 'aria-hidden': 'true' }, [E('i', {}), E('i', {}), E('i', {}), E('i', {})]),
-				E('span', { class: 'usque-probe-value' }, _('Not tested'))
+				E('span', { class: 'usque-bars', 'title': '', 'aria-label': '' }, [
+					E('i', {}),
+					E('i', {}),
+					E('i', {}),
+					E('i', {})
+				])
 			]);
 		}
 

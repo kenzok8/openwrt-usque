@@ -729,7 +729,7 @@
 
 .usque-probe-row {
 	display: grid;
-	grid-template-columns: 22px minmax(0, 1fr) auto auto;
+	grid-template-columns: 22px minmax(0, 1fr) auto;
 	align-items: center;
 	gap: 10px;
 	padding: 9px 2px;
@@ -807,24 +807,6 @@
 
 .usque-probe-row[data-state='fail'] .usque-bars i {
 	background: rgba(255, 59, 48, 0.42);
-}
-
-.usque-probe-value {
-	font-family: var(--uq-mono);
-	font-size: 11.5px;
-	color: var(--uq-muted);
-	white-space: nowrap;
-	font-variant-numeric: tabular-nums;
-	min-width: 46px;
-	text-align: right;
-}
-
-.usque-probe-row[data-state='pass'] .usque-probe-value {
-	color: var(--uq-good);
-}
-
-.usque-probe-row[data-state='fail'] .usque-probe-value {
-	color: var(--uq-bad);
 }
 
 .usque-probe-note {
