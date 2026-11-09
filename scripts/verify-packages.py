@@ -35,7 +35,14 @@ def main():
         version = re.search(r'^PKG_VERSION:=(.+)$', makefile, re.M).group(1).strip()
         release = re.search(r'^PKG_RELEASE:=(.+)$', makefile, re.M).group(1).strip()
         arch = args.arch if package == 'usque' else 'all'
-        pattern = re.compile(re.escape(package) + r'[_-]' + re.escape(version) + r'-(?:r)?' + re.escape(release) + r'[_-]' + re.escape(arch) + r'\.' + extension + '$')
+        if extension == 'apk':
+            # apk 文件名不带架构（SDK 产出，如 usque-4.2.1-r4.apk）；
+            # 参考 honk 的做法：release 时才补 -arch（如 honk-2026.11.09-r1-x86_64.apk），
+            # 这里两种都接受，架构以目录/参数为准。
+            pattern = re.compile(re.escape(package) + r'[_-]' + re.escape(version) + r'-(?:r)?' + re.escape(release) + r'(?:[_-]' + re.escape(arch) + r')?' + r'\.' + extension + '$')
+        else:
+            # ipk 文件名带架构：usque_4.2.1-4_x86_64.ipk
+            pattern = re.compile(re.escape(package) + r'[_-]' + re.escape(version) + r'-(?:r)?' + re.escape(release) + r'[_-]' + re.escape(arch) + r'\.' + extension + '$')
         paths = [p for p in args.packages_dir.glob('*.' + extension) if pattern.fullmatch(p.name)]
         if len(paths) != 1 or paths[0].stat().st_size < 1024:
             raise ValueError(f'Expected exactly one nonempty {package} {version}-r{release} for {arch}')
