@@ -67,10 +67,7 @@ return view.extend({
 		var body = E('div', { class: 'usque-grid' }, [
 			E('section', { class: 'usque-card' }, [
 				E('div', { class: 'usque-card-head' }, [
-					E('div', {}, [
-						E('h3', {}, _('Service log')),
-						E('p', {}, _('Lines from the system log that mention Usque. Cleared on reboot.'))
-					]),
+					E('span', { class: 'usque-mono-count' }, [E('span', {}, self.count), ' ', _('lines shown')]),
 					E('div', { class: 'usque-actions' }, [
 						E('label', { class: 'usque-inline-check', for: 'usque-log-auto' }, [
 							autoBox,
@@ -79,8 +76,7 @@ return view.extend({
 						refreshButton
 					])
 				]),
-				self.output,
-				E('p', { class: 'usque-hint' }, [E('span', {}, self.count), ' ', _('lines shown')])
+				self.output
 			])
 		]);
 

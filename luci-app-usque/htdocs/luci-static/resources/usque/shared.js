@@ -108,21 +108,10 @@ function page(version, body) {
 			href: L.resource('view/usque/usque.css') + '?v=' + encodeURIComponent(version || 'development')
 		}),
 		E('header', { class: 'usque-header' }, [
-			E('div', { class: 'usque-brand' }, [
-				E('img', { src: '/luci-static/usque/logo.svg', width: '44', height: '44', alt: '' }),
-				E('div', {}, [E('h2', {}, 'Usque'), E('p', {}, _('Your WARP connection, at a glance.'))])
-			]),
-			E('span', { class: 'usque-protocol' }, 'MASQUE / WARP')
+			E('img', { src: '/luci-static/usque/logo.svg', width: '28', height: '28', alt: '' }),
+			E('h2', {}, 'Usque')
 		]),
-		body,
-		E('footer', { class: 'usque-footer' }, [
-			E('span', {}, _('Credentials stay on this router. Status never returns private keys or tokens.')),
-			E(
-				'a',
-				{ href: 'https://github.com/Diniboy1123/usque', target: '_blank', rel: 'noopener noreferrer' },
-				_('Upstream project')
-			)
-		])
+		body
 	]);
 }
 

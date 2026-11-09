@@ -167,26 +167,11 @@ return view.extend({
 
 		var body = E('div', { class: 'usque-grid' }, [
 			E('section', { class: 'usque-card' }, [
-				E('div', { class: 'usque-card-head' }, [
-					E('div', {}, [
-						E('h3', {}, _('Package versions')),
-						E('p', {}, _('Compared against the package source configured on this router.'))
-					]),
-					self.upgradeButton
-				]),
 				self.table,
-				self.feedHint
+				self.feedHint,
+				E('div', { class: 'usque-card-foot' }, [self.upgradeButton])
 			]),
-			E('section', { class: 'usque-card' }, [E('h3', {}, _('Upgrade log')), self.jobState, self.jobBox]),
-			E('section', { class: 'usque-card' }, [
-				E('h3', {}, _('How updates work')),
-				E('ul', { class: 'usque-list' }, [
-					E('li', {}, _('Updates come from the kenzok8 package feed, not from GitHub.')),
-					E('li', {}, _('Upgrading stops the service, replaces the packages and starts it again if it was enabled.')),
-					E('li', {}, _('A freshly published version needs a feed sync before it shows up here.')),
-					E('li', {}, _('Credentials in /etc/usque/config.json are not touched by upgrades.'))
-				])
-			])
+			E('section', { class: 'usque-card' }, [self.jobState, self.jobBox])
 		]);
 
 		paintInfo();

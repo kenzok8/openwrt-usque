@@ -373,36 +373,9 @@ return view.extend({
 
 		var body = E('div', { class: 'usque-grid' }, [
 			self.statusNode,
-			E('div', { class: 'usque-columns' }, [
-				E('section', { class: 'usque-card' }, [
-					E('span', { class: 'usque-eyebrow' }, _('VERIFY THE PATH')),
-					E('h3', {}, _('Connection check')),
-					E('p', {}, _('Sends WARP and a global site through Usque, plus one direct request to a domestic site as a control.')),
-					self.testButton,
-					self.probePanel,
-					self.probeNote,
-					E('p', { class: 'usque-hint' }, [
-						_('Settings live on the settings page.'),
-						' ',
-						E('a', { href: L.url('admin/services/usque/settings') }, _('Open settings'))
-					])
-				]),
-				E('section', { class: 'usque-card' }, [
-					E('h3', {}, _('What goes through WARP')),
-					E('ul', { class: 'usque-list' }, [
-						E('li', {}, _('SOCKS5: only applications using this proxy.')),
-						E('li', {}, _('TUN: selected LAN IPv4 when LAN routing is on.')),
-						E('li', {}, _('LAN DNS: only when “Route LAN DNS into the tunnel” is on.')),
-						E('li', {}, _('IPv6 and the router’s own DNS keep their existing paths.')),
-						E(
-							'li',
-							{},
-							_(
-								'During a TUN outage, routed IPv4 waits for reconnection. Stop Usque to restore direct routing.'
-							)
-						)
-					])
-				])
+			E('section', { class: 'usque-card' }, [
+				self.probePanel,
+				E('div', { class: 'usque-probe-foot' }, [self.probeNote, self.testButton])
 			])
 		]);
 

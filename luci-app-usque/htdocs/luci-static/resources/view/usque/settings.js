@@ -16,8 +16,9 @@ return view.extend({
 		self.busy = false;
 
 		var m = new form.Map('usque');
-		var s = m.section(form.NamedSection, 'main', 'usque', _('Connection settings'));
-		s.description = _('Choose how this router uses WARP. Save and apply before starting.');
+		var s = m.section(form.NamedSection, 'main', 'usque');
+		s.anonymous = true;
+		s.addremove = false;
 
 		var o = s.option(form.Flag, 'enabled', _('Enable and start at boot'));
 		o.rmempty = false;
@@ -78,23 +79,7 @@ return view.extend({
 		self.map = m;
 		return m.render().then(function (formNode) {
 			var body = E('div', { class: 'usque-grid' }, [
-				E('section', { class: 'usque-card usque-settings' }, [formNode]),
-				E('aside', { class: 'usque-sidebar' }, [
-					E('section', { class: 'usque-card' }, [
-						E('h3', {}, _('What changes on apply')),
-						E('ul', { class: 'usque-list' }, [
-							E('li', {}, _('Applying restarts the service, so expect a short outage.')),
-							E('li', {}, _('Turning it off stops the service and removes its routing rules.')),
-							E('li', {}, _('The router keeps its own DNS unless the LAN DNS option is on.')),
-							E('li', {}, _('Account credentials are not touched by saving settings.'))
-						])
-					]),
-					E('p', { class: 'usque-hint' }, [
-						_('Status and the connectivity test are on the overview page.'),
-						' ',
-						E('a', { href: L.url('admin/services/usque/overview') }, _('Open overview'))
-					])
-				])
+				E('section', { class: 'usque-card usque-settings' }, [formNode])
 			]);
 			return shared.page(self.state.ui_version, body);
 		});

@@ -87,10 +87,10 @@
 }
 
 .usque-app h2 {
-	font-size: 22px;
-	line-height: 1.15;
-	font-weight: 700;
-	letter-spacing: -0.021em;
+	font-size: 19px;
+	line-height: 1.2;
+	font-weight: 650;
+	letter-spacing: -0.015em;
 }
 
 .usque-app h3 {
@@ -104,10 +104,10 @@
 
 .usque-app .usque-header {
 	display: flex;
-	justify-content: space-between;
+	justify-content: flex-start;
 	align-items: center;
-	gap: 16px;
-	margin: 0 0 14px;
+	gap: 9px;
+	margin: 0 0 12px;
 	padding: 0;
 	height: auto;
 	min-height: 0;
@@ -127,9 +127,9 @@
 }
 
 .usque-brand img {
-	flex: 0 0 36px;
-	width: 36px;
-	height: 36px;
+	flex: 0 0 28px;
+	width: 28px;
+	height: 28px;
 	border-radius: var(--uq-radius-sm);
 	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
 }
@@ -503,37 +503,62 @@
 	outline-offset: 0;
 }
 
-/* iOS 开关：真 input 只留取值，外观用背景绘制 */
-.usque-app input[type='checkbox'] {
-	appearance: none !important;
-	-webkit-appearance: none !important;
-	width: 46px !important;
-	height: 28px !important;
-	min-width: 46px !important;
-	margin: 0 !important;
-	border: 0 !important;
+/* LuCI 的复选框是 input + label，主题会给两者各画一遍。
+   这里把轨道画在 .cbi-checkbox 上，滑块用伪元素，真 input 透明覆盖在上面。 */
+.usque-app .cbi-checkbox {
+	position: relative;
+	display: inline-block;
+	width: 46px;
+	height: 28px;
 	border-radius: 999px;
-	/* 轨道和滑块都用背景图层画：Argon 对 :checked 用 !important 塞对勾图，
-	   这里只能同样用 !important 覆盖，并把主题设的 background-size 压回去 */
-	background:
-		radial-gradient(circle 11px at 14px 14px, #fff 99%, transparent 100%) 0 0 / 100% 100%
-			no-repeat,
-		linear-gradient(var(--uq-switch-off), var(--uq-switch-off)) 0 0 / 100% 100% no-repeat !important;
-	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12) inset;
+	background: var(--uq-switch-off);
 	cursor: pointer;
-	transition: background 0.22s ease;
+	transition: background-color 0.2s ease;
 }
 
-.usque-app input[type='checkbox']:checked {
-	background:
-		radial-gradient(circle 11px at 32px 14px, #fff 99%, transparent 100%) 0 0 / 100% 100%
-			no-repeat,
-		linear-gradient(var(--uq-green), var(--uq-green)) 0 0 / 100% 100% no-repeat !important;
+.usque-app .cbi-checkbox label {
+	display: none !important;
 }
 
-.usque-app input[type='checkbox']:focus-visible {
+.usque-app .cbi-checkbox::before {
+	content: '';
+	position: absolute;
+	top: 3px;
+	left: 3px;
+	width: 22px;
+	height: 22px;
+	border-radius: 50%;
+	background: #fff;
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.22);
+	transition: transform 0.2s ease;
+}
+
+.usque-app .cbi-checkbox:has(input:checked) {
+	background: var(--uq-green);
+}
+
+.usque-app .cbi-checkbox:has(input:checked)::before {
+	transform: translateX(18px);
+}
+
+.usque-app .cbi-checkbox input[type='checkbox'] {
+	position: absolute;
+	inset: 0;
+	width: 100% !important;
+	height: 100% !important;
+	min-width: 0 !important;
+	margin: 0 !important;
+	padding: 0 !important;
+	border: 0 !important;
+	background: none !important;
+	opacity: 0;
+	cursor: pointer;
+}
+
+.usque-app .cbi-checkbox input[type='checkbox']:focus-visible {
 	outline: 3px solid var(--uq-accent-soft);
 	outline-offset: 2px;
+	border-radius: 999px;
 }
 
 /* ---------- 侧栏 ---------- */
@@ -700,10 +725,8 @@
 .usque-probe {
 	display: grid;
 	gap: 2px;
-	margin: 14px 0 0;
-	padding: 4px 0;
-	border-top: 1px solid var(--uq-hairline);
-	border-bottom: 1px solid var(--uq-hairline);
+	margin: 0;
+	padding: 0;
 }
 
 .usque-probe-row {
@@ -1051,4 +1074,45 @@
 	.usque-button:active {
 		transform: none;
 	}
+}
+
+/* 卡片底部操作条 */
+.usque-card-foot {
+	display: flex;
+	justify-content: flex-end;
+	gap: 10px;
+	margin-top: 14px;
+	padding-top: 12px;
+	border-top: 1px solid var(--uq-hairline);
+}
+
+/* 检测卡底部：一句话结论 + 按钮 */
+.usque-probe-foot {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+	flex-wrap: wrap;
+	margin-top: 14px;
+	padding-top: 12px;
+	border-top: 1px solid var(--uq-hairline);
+}
+
+.usque-probe-foot .usque-probe-note {
+	margin: 0;
+	flex: 1 1 200px;
+}
+
+.usque-probe-foot .usque-button {
+	flex: 0 0 auto;
+}
+
+.usque-spacer {
+	display: block;
+}
+
+.usque-mono-count {
+	font-family: var(--uq-mono);
+	font-size: 11px;
+	color: var(--uq-muted);
 }
