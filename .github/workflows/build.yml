@@ -27,6 +27,8 @@ jobs:
     needs: check
     runs-on: ubuntu-24.04
     timeout-minutes: 60
+    # PR 只跑一组能最快暴露问题的最常见组合，完整 14 组留给 main 和 tag
+    if: github.event_name != 'pull_request' || (matrix.sdk == '25.12' && matrix.arch == 'x86_64')
     strategy:
       fail-fast: false
       max-parallel: 4
