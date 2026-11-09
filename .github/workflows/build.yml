@@ -27,14 +27,12 @@ jobs:
     needs: check
     runs-on: ubuntu-24.04
     timeout-minutes: 60
-    # PR 只跑一组能最快暴露问题的最常见组合，完整 14 组留给 main 和 tag
-    if: github.event_name != 'pull_request' || (matrix.sdk == '25.12' && matrix.arch == 'x86_64')
     strategy:
       fail-fast: false
       max-parallel: 4
+      # PR 只跑一组最快暴露问题的组合，main 与 tag 跑完整 14 组
       matrix:
-        sdk: ['24.10', '25.12']
-        arch: [x86_64, aarch64_generic, aarch64_cortex-a53, aarch64_cortex-a72, aarch64_cortex-a76, arm_cortex-a7_neon-vfpv4, arm_cortex-a9]
+        include: ${{ fromJSON(github.event_name == 'pull_request' && '[{"sdk":"25.12","arch":"x86_64"}]' || '[{"sdk":"24.10","arch":"x86_64"},{"sdk":"24.10","arch":"aarch64_generic"},{"sdk":"24.10","arch":"aarch64_cortex-a53"},{"sdk":"24.10","arch":"aarch64_cortex-a72"},{"sdk":"24.10","arch":"aarch64_cortex-a76"},{"sdk":"24.10","arch":"arm_cortex-a7_neon-vfpv4"},{"sdk":"24.10","arch":"arm_cortex-a9"},{"sdk":"25.12","arch":"x86_64"},{"sdk":"25.12","arch":"aarch64_generic"},{"sdk":"25.12","arch":"aarch64_cortex-a53"},{"sdk":"25.12","arch":"aarch64_cortex-a72"},{"sdk":"25.12","arch":"aarch64_cortex-a76"},{"sdk":"25.12","arch":"arm_cortex-a7_neon-vfpv4"},{"sdk":"25.12","arch":"arm_cortex-a9"}]') }}
     steps:
       - uses: actions/checkout@v7
         with:
