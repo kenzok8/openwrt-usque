@@ -6,6 +6,7 @@ USQUE_TABLE=257
 USQUE_PRIO=25700
 USQUE_PRIO_OIF=25701
 USQUE_CONF=/etc/usque/config.json
+USQUE_RUNTIME_CONF=/var/run/usque/config.json
 USQUE_LOCK=/var/lock/usque.lock
 USQUE_INSTANCE=/var/run/usque/instance
 USQUE_ROUTE_STATE=/var/run/usque/route-state

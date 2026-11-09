@@ -37,6 +37,8 @@ esac
 uci -q get usque.main.route_lan 2> /dev/null | grep -qx 1 && lan_routing=true || true
 # 版本由包写入文件；页面每 5 秒轮询一次，不能每次都去启动核心
 version=$(tr -cd '0-9A-Za-z._+-' < /usr/share/usque/version 2> /dev/null || true)
+endpoint_used=$(uci -q get usque.main.endpoint 2> /dev/null || true)
+valid_ipv4 "${endpoint_used:-0}" 2> /dev/null || endpoint_used=$(jsonfilter -i "$CONF" -e '@.endpoint_v4' 2> /dev/null || true)
 if [ -z "$version" ]; then
 	raw=$(/usr/bin/usque -c '' version 2> /dev/null | sed -n 's/^usque version: //p' | head -n 1 || true)
 	version=$(printf '%s' "$raw" | tr -cd '0-9A-Za-z._+-')
@@ -63,6 +65,6 @@ if [ "$running" = true ] && [ "$lan_routing" = true ] &&
 fi
 if [ -s /var/run/usque/error ]; then
 	last_error=$(cat /var/run/usque/error)
-	case "$last_error" in account_missing | account_invalid | invalid_mode | invalid_interface | invalid_bind | invalid_port | route_failed | firewall_failed | lan_zone_mismatch | dns_conflict | dns_failed) error=$last_error ;; esac
+	case "$last_error" in account_missing | account_invalid | invalid_mode | invalid_interface | invalid_bind | invalid_port | route_failed | firewall_failed | lan_zone_mismatch | dns_conflict | dns_failed | invalid_endpoint) error=$last_error ;; esac
 fi
-printf '{"registered":%s,"running":%s,"pid":%s,"version":"%s","ui_version":"%s","mode":"%s","tun_present":%s,"route_ready":%s,"lan_routing":%s,"dns_routing":%s,"enabled":%s,"error":"%s"}\n' "$registered" "$running" "$pid" "$version" "$ui_version" "$mode" "$tun_present" "$route_ready" "$lan_routing" "$dns_routing" "$enabled" "$error"
+printf '{"registered":%s,"running":%s,"pid":%s,"version":"%s","ui_version":"%s","mode":"%s","tun_present":%s,"route_ready":%s,"lan_routing":%s,"dns_routing":%s,"enabled":%s,"error":"%s","endpoint":"%s"}\n' "$registered" "$running" "$pid" "$version" "$ui_version" "$mode" "$tun_present" "$route_ready" "$lan_routing" "$dns_routing" "$enabled" "$error" "$endpoint_used"

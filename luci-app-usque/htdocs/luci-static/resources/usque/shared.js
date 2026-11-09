@@ -25,6 +25,7 @@ var errors = {
 		'Another configuration already uses the tunnel DNS settings. LAN IPv4 routing was rolled back.'
 	),
 	dns_failed: _('The tunnel DNS resolver could not start. LAN IPv4 routing was rolled back.'),
+	invalid_endpoint: _('The endpoint address is not a valid IPv4 address.'),
 	route_failed: _('The tunnel route could not be applied.'),
 	probe_failed: _('The connectivity test failed. The process may still be running.'),
 	not_running: _('Start Usque before testing the connection.'),

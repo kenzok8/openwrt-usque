@@ -6,7 +6,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=usque
 PKG_VERSION:=4.2.1
-PKG_RELEASE:=3
+PKG_RELEASE:=4
 
 # Select the upstream binary that matches the 32-bit ARM CPU generation.
 ifeq ($(ARCH),x86_64)

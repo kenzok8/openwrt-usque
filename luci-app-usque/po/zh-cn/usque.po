@@ -482,3 +482,12 @@ msgstr "注册前先应用；修改不会重命名已有账号。"
 
 msgid "Only forwarded IPv4 from this device goes through TUN. IPv6 stays as is."
 msgstr "只接管这台设备转发的 IPv4，IPv6 保持原样。"
+
+msgid "Endpoint address"
+msgstr "接入点地址"
+
+msgid "Leave empty to use the address stored in the account. Change it when the default endpoint is unreachable."
+msgstr "留空则用账户里记录的地址；默认入口连不上时可换成其他 WARP 入口 IP。"
+
+msgid "The endpoint address is not a valid IPv4 address."
+msgstr "接入点地址不是合法的 IPv4。"

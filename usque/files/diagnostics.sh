@@ -65,15 +65,20 @@ esac
 ) &
 
 (
-	# shellcheck disable=SC2086
-	out=$($CURL -4 -sS -o /dev/null --max-time 8 -w '%{http_code} %{time_total}' https://www.youtube.com/ 2> /dev/null) || out=
-	code=${out%% *}
-	total=${out#* }
-	case "$code" in '' | 000) : ;; *)
-		printf '%s' "$code" > "$TMP/youtube.code"
-		to_ms "$total" > "$TMP/youtube.ms" 2> /dev/null || true
-		;;
-	esac
+	attempt=0
+	while [ "$attempt" -lt 2 ]; do
+		attempt=$((attempt + 1))
+		# shellcheck disable=SC2086
+		out=$($CURL -4 -sS -o /dev/null --max-time 12 -w '%{http_code} %{time_total}' https://www.youtube.com/ 2> /dev/null) || out=
+		code=${out%% *}
+		total=${out#* }
+		case "$code" in '' | 000) sleep 1 ;; *)
+			printf '%s' "$code" > "$TMP/youtube.code"
+			to_ms "$total" > "$TMP/youtube.ms" 2> /dev/null || true
+			break
+			;;
+		esac
+	done
 ) &
 
 (

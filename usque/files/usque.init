@@ -19,8 +19,18 @@ fail_start() {
 	return 1
 }
 
+# 入口 IP 可覆盖：账户里的端点被封时换一个，账户文件保持不动
+build_runtime_conf() {
+	override=$1
+	mkdir -p /var/run/usque
+	cp "$USQUE_CONF" "$USQUE_RUNTIME_CONF" || return 1
+	chmod 600 "$USQUE_RUNTIME_CONF"
+	sed -i "s#\"endpoint_v4\"[[:space:]]*:[[:space:]]*\"[^\"]*\"#\"endpoint_v4\": \"$override\"#" "$USQUE_RUNTIME_CONF"
+	[ "$(jsonfilter -i "$USQUE_RUNTIME_CONF" -e '@.endpoint_v4' 2> /dev/null || true)" = "$override" ]
+}
+
 start_service() {
-	local mode bind port ifname routelan routelans lan endpoint
+	local mode bind port ifname routelan routelans lan endpoint endpoint_override conf
 	config_load usque
 	config_get mode main mode socks
 	config_get_bool routelan main route_lan 0
@@ -35,6 +45,19 @@ start_service() {
 		return 1
 	}
 	rm -f /var/run/usque/error
+	conf=$USQUE_CONF
+	config_get endpoint_override main endpoint ''
+	if [ -n "$endpoint_override" ]; then
+		valid_ipv4 "$endpoint_override" || {
+			fail_start invalid_endpoint
+			return 1
+		}
+		build_runtime_conf "$endpoint_override" || {
+			fail_start route_failed
+			return 1
+		}
+		conf=$USQUE_RUNTIME_CONF
+	fi
 	[ -s "$USQUE_CONF" ] || {
 		fail_start account_missing
 		return 1
@@ -52,7 +75,7 @@ start_service() {
 			fail_start invalid_interface
 			return 1
 		}
-		endpoint=$(jsonfilter -i "$USQUE_CONF" -e '@.endpoint_v4' 2> /dev/null || true)
+		endpoint=$(jsonfilter -i "$conf" -e '@.endpoint_v4' 2> /dev/null || true)
 		if [ "$routelan" = 1 ]; then valid_ipv4 "$endpoint" && valid_ifname "$lan" || {
 			fail_start route_failed
 			return 1
@@ -86,7 +109,7 @@ start_service() {
 		procd_set_param stderr 1
 		procd_set_param respawn
 		procd_set_param pidfile /var/run/usque.pid
-		procd_set_param command /usr/bin/usque -c "$USQUE_CONF" nativetun -n "$ifname" --always-reconnect
+		procd_set_param command /usr/bin/usque -c "$conf" nativetun -n "$ifname" --always-reconnect
 		procd_close_instance
 		procd_open_instance route
 		procd_set_param stderr 1
@@ -115,7 +138,7 @@ start_service() {
 	procd_set_param stderr 1
 	procd_set_param respawn
 	procd_set_param pidfile /var/run/usque.pid
-	procd_set_param command /usr/bin/usque -c "$USQUE_CONF" socks -b "$bind" -p "$port" --always-reconnect
+	procd_set_param command /usr/bin/usque -c "$conf" socks -b "$bind" -p "$port" --always-reconnect
 	procd_close_instance
 }
 
