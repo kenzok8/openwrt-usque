@@ -36,6 +36,17 @@ return view.extend({
 				? self.lines.join('\n')
 				: _('No usque entries in the system log yet.');
 			self.count.textContent = String(self.lines.length);
+			// 最新的在末尾；节点进 DOM 前 scrollHeight 是 0，等布局完成再滚
+			var tries = 8;
+			(function scrollToEnd() {
+				window.requestAnimationFrame(function () {
+					if (self.output.scrollHeight > self.output.clientHeight) {
+						self.output.scrollTop = self.output.scrollHeight;
+						return;
+					}
+					if (tries-- > 0) scrollToEnd();
+				});
+			})();
 		}
 
 		var autoBox = E('input', { type: 'checkbox', id: 'usque-log-auto' });
