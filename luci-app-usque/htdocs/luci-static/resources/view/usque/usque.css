@@ -130,8 +130,6 @@
 	flex: 0 0 28px;
 	width: 28px;
 	height: 28px;
-	border-radius: var(--uq-radius-sm);
-	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
 }
 
 .usque-brand p {
