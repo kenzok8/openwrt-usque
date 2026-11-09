@@ -41,7 +41,10 @@ else ifeq ($(ARCH),mips64el)
 endif
 
 PKG_SOURCE:=usque_$(PKG_VERSION)_linux_$(USQUE_ARCH).zip
-PKG_SOURCE_URL:=https://github.com/Diniboy1123/usque/releases/download/v$(PKG_VERSION)/
+# 第二行是传输兜底：CI 里同一份资产被并发下载时 GitHub 会返回 403/404，
+# 镜像只负责搬运，完整性仍由 PKG_HASH 校验。
+PKG_SOURCE_URL:=https://github.com/Diniboy1123/usque/releases/download/v$(PKG_VERSION)/ \
+	https://ghfast.top/https://github.com/Diniboy1123/usque/releases/download/v$(PKG_VERSION)/
 PKG_HASH:=$(USQUE_HASH)
 
 PKG_LICENSE:=MIT GPL-3.0-only
