@@ -1,0 +1,152 @@
+name: Release
+
+# 打 tag 时重新跑一遍完整矩阵，用同一份产物出 Release。
+# 默认只建草稿，正文里的版本与说明由本地补齐后再发布。
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: '已存在的 tag，例如 v2026.11.09'
+        required: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    uses: ./.github/workflows/build.yml
+
+  release:
+    needs: build
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - name: Resolve tag
+        id: tag
+        env:
+          INPUT_TAG: ${{ inputs.tag }}
+        run: |
+          tag="${INPUT_TAG:-${GITHUB_REF_NAME}}"
+          case "$tag" in
+            v*) ;;
+            *) echo "tag 必须以 v 开头：$tag" >&2; exit 1 ;;
+          esac
+          printf 'name=%s\n' "$tag" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/download-artifact@v7
+        with:
+          path: dist
+          pattern: usque-sdk*
+          merge-multiple: false
+
+      - name: Assemble assets
+        env:
+          TAG: ${{ steps.tag.outputs.name }}
+        run: |
+          set -eu
+          mkdir -p out/sdk-24.10 out/sdk-25.12
+          for dir in dist/usque-sdk*; do
+            [ -d "$dir" ] || continue
+            sdk=$(basename "$dir" | sed -n 's/^usque-sdk\([0-9.]*\)-.*/\1/p')
+            case "$sdk" in
+              24.10 | 25.12) target="out/sdk-$sdk" ;;
+              *) echo "未知 SDK：$dir" >&2; exit 1 ;;
+            esac
+            find "$dir" -maxdepth 1 -type f \( -name '*.ipk' -o -name '*.apk' \) -exec cp {} "$target/" \;
+          done
+          for sdk in 24.10 25.12; do
+            dir="out/sdk-$sdk"
+            count=$(find "$dir" -maxdepth 1 -type f | wc -l)
+            [ "$count" -gt 0 ] || {
+              echo "SDK $sdk 没有产物" >&2
+              exit 1
+            }
+            (cd "$dir" && sha256sum ./* > SHA256SUMS)
+          done
+          find out -type f | sort | sed 's|^|  |'
+
+      - name: Write draft notes
+        env:
+          TAG: ${{ steps.tag.outputs.name }}
+        run: |
+          set -eu
+          python3 - "$TAG" > notes.md <<'PY'
+          import pathlib
+          import sys
+
+          tag = sys.argv[1]
+          rows = []
+          for sdk in ('24.10', '25.12'):
+              fmt = 'IPK' if sdk == '24.10' else 'APK'
+              files = sorted(p for p in (pathlib.Path('out') / ('sdk-' + sdk)).iterdir() if p.is_file())
+              packages = [p.name for p in files if p.suffix in ('.ipk', '.apk')]
+              rows.append((sdk, fmt, packages))
+          print(f'# Usque {tag}')
+          print()
+          print('> 草稿：修复与改进段落由维护者补齐后再发布。')
+          print()
+          print('## 版本')
+          print()
+          print('| 项目 | 版本 |')
+          print('| --- | --- |')
+          print('| Git tag | ' + tag + ' |')
+          print('| usque 包 | 以包内版本为准，见附件文件名 |')
+          print('| 上游核心 | Diniboy1123/usque v4.2.1 |')
+          print()
+          print('## 修复')
+          print()
+          print('- 待补。')
+          print()
+          print('## 功能改进')
+          print()
+          print('- 待补。')
+          print()
+          print('## 构建与安装')
+          print()
+          for sdk, fmt, packages in rows:
+              print(f'### OpenWrt {sdk}（{fmt}）')
+              print()
+              for name in packages:
+                  print('- `' + name + '`')
+              print('- `SHA256SUMS`')
+              print()
+          print('安装前先校验：')
+          print()
+          print('```sh')
+          print('sha256sum -c SHA256SUMS')
+          print('```')
+          print()
+          print('## 已知限制')
+          print()
+          print('- 待补：本次验证范围与实际覆盖的架构。')
+          PY
+          cat notes.md
+
+      - name: Create draft release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ steps.tag.outputs.name }}
+        run: |
+          set -eu
+          if gh release view "$TAG" > /dev/null 2>&1; then
+            echo "tag $TAG 已有 Release，不覆盖" >&2
+            exit 1
+          fi
+          gh release create "$TAG" \
+            --draft \
+            --title "Usque $TAG" \
+            --notes-file notes.md \
+            out/sdk-24.10/*.ipk out/sdk-24.10/SHA256SUMS \
+            out/sdk-25.12/*.apk out/sdk-25.12/SHA256SUMS

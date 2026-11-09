@@ -1,0 +1,38 @@
+name: 问题反馈
+description: 提交 Usque 的安装、界面或运行问题
+title: '[Bug] '
+body:
+  - type: markdown
+    attributes:
+      value: 请勿上传账号文件、私钥或令牌。先说明触发步骤和实际行为，不要直接粘贴完整配置。
+  - type: input
+    id: environment
+    attributes:
+      label: 固件与架构
+      placeholder: OpenWrt 25.12 / x86_64
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Usque 与 LuCI 包版本
+    validations:
+      required: true
+  - type: dropdown
+    id: mode
+    attributes:
+      label: 使用模式
+      options: [SOCKS5, TUN 手动接入, TUN 接管 LAN IPv4]
+    validations:
+      required: true
+  - type: textarea
+    id: behavior
+    attributes:
+      label: 触发步骤、预期行为与实际结果
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: 页面错误或经过脱敏的日志
+      description: 截图请隐藏账号和其他敏感信息。

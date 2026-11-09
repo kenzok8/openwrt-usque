@@ -1,0 +1,33 @@
+name: Check Usque upstream
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '20 1 * * *'
+permissions:
+  contents: read
+concurrency:
+  group: usque-upstream
+  cancel-in-progress: false
+jobs:
+  check:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - name: Prepare reviewed update candidate
+        id: upstream
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          version=$(gh api repos/Diniboy1123/usque/releases/latest --jq .tag_name)
+          python3 scripts/upstream-candidate.py "$version"
+      - uses: actions/upload-artifact@v7
+        if: steps.upstream.outputs.changed == 'true'
+        with:
+          name: usque-upstream-candidate
+          path: artifacts/upstream/
+          retention-days: 14
+          if-no-files-found: error

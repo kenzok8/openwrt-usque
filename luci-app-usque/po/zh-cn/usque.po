@@ -1,0 +1,472 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Language: zh_CN\n"
+
+msgid "127.0.0.1 keeps the proxy on this router. Other addresses may expose an unauthenticated proxy to reachable clients."
+msgstr "127.0.0.1 仅供本机使用。其他监听地址可能向可达客户端开放无认证代理。"
+
+msgid "A firewall section with the same name belongs to another configuration."
+msgstr "同名防火墙配置已被其他程序占用。"
+
+msgid "A new account replaces the saved account only after registration succeeds. Failure keeps the current account."
+msgstr "新账号注册成功后才会替换旧账号；失败时保留现有账号。"
+
+msgid "Account"
+msgstr "账号"
+
+msgid "Account ready"
+msgstr "账号已就绪"
+
+msgid "Account saved."
+msgstr "账号已保存。"
+
+msgid "An account already exists. Refresh the page before replacing it."
+msgstr "已有账号，请刷新页面后再操作替换。"
+
+msgid "Another network change is in progress. Try again shortly."
+msgstr "正在处理另一项网络变更，请稍后重试。"
+
+msgid "Another registration is in progress. Try again shortly."
+msgstr "已有注册任务正在进行，请稍后重试。"
+
+msgid "Apply this name before registering. Changing it does not rename an existing account."
+msgstr "先应用名称，再注册账号。修改此处不会重命名已有账号。"
+
+msgid "Cancel"
+msgstr "取消"
+
+msgid "Choose SOCKS5 or TUN mode."
+msgstr "请选择 SOCKS5 或 TUN 模式。"
+
+msgid "Choose a port between 1 and 65535."
+msgstr "端口范围为 1 至 65535。"
+
+msgid "Choose how this router uses WARP. Save and apply before starting."
+msgstr "选择这台路由器使用 WARP 的方式，保存并应用后生效。"
+
+msgid "Connection check"
+msgstr "连接检测"
+
+msgid "Connection settings"
+msgstr "连接设置"
+
+msgid "Core version"
+msgstr "核心版本"
+
+msgid "Could not read service status. Refresh to try again."
+msgstr "无法读取服务状态，请刷新重试。"
+
+msgid "Credentials stay on this router. Status never returns private keys or tokens."
+msgstr "账号凭据仅保存在路由器上，状态接口不返回私钥或令牌。"
+
+msgid "During a TUN outage, routed IPv4 waits for reconnection. Stop Usque to restore direct routing."
+msgstr "TUN 中断时，被接管的 IPv4 等待重连；停止 Usque 后恢复直连。"
+
+msgid "Enable and start at boot"
+msgstr "启用并开机自启"
+
+msgid "Turn on “Enable and start at boot” and apply to start it."
+msgstr "勾选`启用并开机自启`并保存应用，即可启动服务。"
+
+msgid "I accept the Cloudflare terms for this registration."
+msgstr "我同意本次注册适用的 Cloudflare 服务条款。"
+
+msgid "IPv6 and the router’s own DNS keep their existing paths."
+msgstr "IPv6 和路由器自身 DNS 保持原有路径。"
+
+msgid "LAN IPv4 protected"
+msgstr "LAN IPv4 已接管"
+
+msgid "LAN device"
+msgstr "局域网设备"
+
+msgid "Listen address"
+msgstr "监听地址"
+
+msgid "Listen port"
+msgstr "监听端口"
+
+msgid "Local SOCKS5"
+msgstr "本机 SOCKS5"
+
+msgid "Sends WARP and a global site through Usque, plus one direct request to a domestic site as a control."
+msgstr "WARP 和境外站点经隧道请求；境内站点直连，作为本地网络的对照组。"
+
+msgid "Manual TUN access"
+msgstr "手动使用 TUN"
+
+msgid "Needs attention"
+msgstr "需要处理"
+
+msgid "No connectivity test yet. Process status alone does not confirm WARP access."
+msgstr "尚未检测连接。进程运行不代表 WARP 已连通。"
+
+msgid "Not registered"
+msgstr "未注册"
+
+msgid "Only forwarded IPv4 from the selected LAN device is routed through TUN. IPv6 and router DNS are unchanged."
+msgstr "仅接管选定局域网设备转发的 IPv4，IPv6 和路由器 DNS 不变。"
+
+msgid "Route LAN DNS into the tunnel"
+msgstr "局域网 DNS 走隧道"
+
+msgid "Sends this LAN device to a resolver inside the tunnel instead of the local one. Other clients and the router keep their current DNS."
+msgstr "把选定设备的 DNS 交给隧道内的解析器，不走本机 dnsmasq；其他客户端和路由器自身 DNS 不变。"
+
+msgid "LAN IPv4 + DNS"
+msgstr "局域网 IPv4 + DNS"
+
+msgid "Operating mode"
+msgstr "运行模式"
+
+msgid "Read terms"
+msgstr "阅读条款"
+
+msgid "Ready when you are"
+msgstr "从注册开始"
+
+msgid "Register a WARP account"
+msgstr "注册 WARP 账号"
+
+msgid "Register a WARP account, then enable the service below."
+msgstr "先注册 WARP 账号，再在下方启用服务。"
+
+msgid "Register account"
+msgstr "注册账号"
+
+msgid "Register an account before starting Usque."
+msgstr "请先注册账号，再启动 Usque。"
+
+msgid "Registered"
+msgstr "已注册"
+
+msgid "Registration device name"
+msgstr "注册设备名"
+
+msgid "Registration failed. Your previous account has been kept."
+msgstr "注册失败，现有账号已保留。"
+
+msgid "Replace account"
+msgstr "替换账号"
+
+msgid "Restart"
+msgstr "重新启动"
+
+msgid "Route LAN IPv4"
+msgstr "接管局域网 IPv4"
+
+msgid "SOCKS5 · local proxy"
+msgstr "SOCKS5 · 本机代理"
+
+msgid "SOCKS5: only applications using this proxy."
+msgstr "SOCKS5：仅处理主动使用该代理的应用流量。"
+
+msgid "Settings applied."
+msgstr "设置已应用。"
+
+msgid "Settings changed. Restart Usque to apply them."
+msgstr "设置已更改，请重启 Usque 使其生效。"
+
+msgid "Start Usque before testing the connection."
+msgstr "请先启动 Usque，再检测连接。"
+
+msgid "Start service"
+msgstr "启动服务"
+
+msgid "Start with a letter and use at most 15 letters, numbers, dots, underscores or hyphens."
+msgstr "以字母开头，最多 15 位，可用字母、数字、点、下划线或连字符。"
+
+msgid "Applying starts the service now and keeps it on after a reboot. Clearing it stops the service and turns the boot entry off. The start and stop buttons on the overview page only switch the service without touching the boot setting."
+msgstr "保存并应用会立即启动服务，并在开机时自动启动；取消勾选会停止服务、关掉开机自启。上方`启动服务 / 停止服务`按钮只临时启停，不改开机设置。"
+
+msgid "Running now, but not set to start at boot. A reboot stops it."
+msgstr "正在运行，但没有设为开机自启，重启路由器后会停掉。"
+
+msgid "Status unavailable"
+msgstr "状态不可用"
+
+msgid "Stop Usque?"
+msgstr "停止 Usque？"
+
+msgid "Stop service"
+msgstr "停止服务"
+
+msgid "Stopping removes Usque routing and restores the original IPv4 route. The boot setting is unchanged."
+msgstr "停止后移除 Usque 路由并恢复原有 IPv4 路径，开机启动设置保持不变。"
+
+msgid "TUN device"
+msgstr "TUN 设备"
+
+msgid "TUN · network interface"
+msgstr "TUN · 网络接口"
+
+msgid "TUN: selected LAN IPv4 when LAN routing is on."
+msgstr "TUN：开启接管后，处理指定局域网的 IPv4 流量。"
+
+msgid "Test connection"
+msgstr "检测连接"
+
+msgid "Testing through Usque…"
+msgstr "正在通过 Usque 检测…"
+
+msgid "The TUN device is not ready yet."
+msgstr "TUN 设备尚未就绪。"
+
+msgid "The connectivity test failed. The process may still be running."
+msgstr "连接检测未通过，核心进程可能仍在运行。"
+
+msgid "The endpoint responded without WARP. Check the selected mode and route."
+msgstr "端点有响应，但未经过 WARP，请检查模式与路由。"
+
+msgid "Another configuration already uses the tunnel DNS settings. LAN IPv4 routing was rolled back."
+msgstr "隧道 DNS 的配置项已被其他配置占用，局域网 IPv4 接管已回滚。"
+
+msgid "The tunnel DNS resolver could not start. LAN IPv4 routing was rolled back."
+msgstr "隧道 DNS 解析器启动失败，局域网 IPv4 接管已回滚。"
+
+msgid "The firewall could not be applied. Check the firewall configuration."
+msgstr "无法应用防火墙规则，请检查防火墙配置。"
+
+msgid "The listen address is invalid."
+msgstr "监听地址无效。"
+
+msgid "The network device name is invalid."
+msgstr "网络设备名称无效。"
+
+msgid "The operation failed. Check the service and network configuration."
+msgstr "操作未完成，请检查服务与网络配置。"
+
+msgid "The operation failed. Your settings are kept. Refresh the status and try again."
+msgstr "操作未完成，设置已保留，请刷新状态后重试。"
+
+msgid "The policy route or packet mark is already in use."
+msgstr "策略路由或流量标记已被其他程序占用。"
+
+msgid "The process is running. Test the connection to verify WARP access."
+msgstr "核心进程正在运行，可检测连接以确认 WARP 是否连通。"
+
+msgid "The saved account is incomplete. Register again or restore a valid account."
+msgstr "账号信息不完整，请重新注册或恢复有效账号。"
+
+msgid "The selected LAN device does not exist."
+msgstr "选定的局域网设备不存在。"
+
+msgid "The selected device is already used by another network."
+msgstr "该设备已被其他网络占用。"
+
+msgid "The service is enabled but is not running."
+msgstr "服务已启用，但当前未运行。"
+
+msgid "The tunnel route could not be applied."
+msgstr "无法应用隧道路由。"
+
+msgid "This requests a free WARP account from Cloudflare and stores its credentials on this router."
+msgstr "将向 Cloudflare 申请免费 WARP 账号，并将凭据保存在这台路由器上。"
+
+msgid "Traffic scope"
+msgstr "流量范围"
+
+msgid "Unknown"
+msgstr "未知"
+
+msgid "Upstream project"
+msgstr "上游项目"
+
+msgid "Use 1–32 letters, numbers, dots, underscores or hyphens."
+msgstr "使用 1 至 32 位字母、数字、点、下划线或连字符。"
+
+msgid "Use a device in the firewall LAN zone, normally br-lan."
+msgstr "请选择属于防火墙 LAN 区域的设备，通常是 br-lan。"
+
+msgid "Usque is running"
+msgstr "Usque 正在运行"
+
+msgid "VERIFY THE PATH"
+msgstr "验证实际路径"
+
+msgid "WARP access verified by this test."
+msgstr "本次检测已确认通过 WARP 访问。"
+
+msgid "Waiting for TUN"
+msgstr "等待 TUN 就绪"
+
+msgid "What goes through WARP"
+msgstr "哪些流量会经过 WARP"
+
+msgid "Your WARP connection, at a glance."
+msgstr "看清连接状态，掌握流量去向。"
+
+msgid "Your local SOCKS5 endpoint is ready for a connectivity test."
+msgstr "本机 SOCKS5 服务正在运行，可进一步检测实际连接。"
+
+msgid "The selected device is not in the firewall LAN zone."
+msgstr "选定设备不属于防火墙 LAN 区域，请检查局域网设备。"
+
+msgid "Overview"
+msgstr "概览"
+
+msgid "Settings"
+msgstr "设置"
+
+msgid "Logs"
+msgstr "日志"
+
+msgid "Updates"
+msgstr "更新"
+
+msgid "Status and the connectivity test are on the overview page."
+msgstr "状态和连接检测在概览页。"
+
+msgid "Open overview"
+msgstr "打开概览"
+
+msgid "Settings live on the settings page."
+msgstr "设置项在设置页。"
+
+msgid "Open settings"
+msgstr "打开设置"
+
+msgid "What changes on apply"
+msgstr "保存并应用会发生什么"
+
+msgid "Applying restarts the service, so expect a short outage."
+msgstr "保存并应用会重启服务，会有几秒中断。"
+
+msgid "Turning it off stops the service and removes its routing rules."
+msgstr "取消勾选会停止服务并移除它加的路由规则。"
+
+msgid "The router keeps its own DNS unless the LAN DNS option is on."
+msgstr "不勾选局域网 DNS 时，路由器自身 DNS 保持原样。"
+
+msgid "Account credentials are not touched by saving settings."
+msgstr "保存设置不会改动账号凭据。"
+
+msgid "LAN DNS: only when “Route LAN DNS into the tunnel” is on."
+msgstr "局域网 DNS：仅在勾选`局域网 DNS 走隧道`时。"
+
+msgid "Service log"
+msgstr "服务日志"
+
+msgid "Lines from the system log that mention Usque. Cleared on reboot."
+msgstr "系统日志里提到 Usque 的行，重启后清空。"
+
+msgid "Auto refresh"
+msgstr "自动刷新"
+
+msgid "Refresh"
+msgstr "刷新"
+
+msgid "No usque entries in the system log yet."
+msgstr "系统日志里还没有 Usque 的记录。"
+
+msgid "lines shown"
+msgstr "行"
+
+msgid "Package versions"
+msgstr "软件包版本"
+
+msgid "Compared against the package source configured on this router."
+msgstr "与本机已配置的软件源对比。"
+
+msgid "Package"
+msgstr "包名"
+
+msgid "Installed"
+msgstr "已安装"
+
+msgid "In repository"
+msgstr "源内版本"
+
+msgid "Not installed"
+msgstr "未安装"
+
+msgid "Not in repository"
+msgstr "源里没有"
+
+msgid "Up to date"
+msgstr "已是最新"
+
+msgid "Update available"
+msgstr "有更新"
+
+msgid "Upgrade now"
+msgstr "立即升级"
+
+msgid "Upgrade log"
+msgstr "升级日志"
+
+msgid "Nothing has been upgraded from this page yet."
+msgstr "还没有从本页执行过升级。"
+
+msgid "Upgrade running. This page refreshes while it works."
+msgstr "升级进行中，页面会自动刷新。"
+
+msgid "The last upgrade failed. The log above shows why."
+msgstr "上次升级失败，原因见上方日志。"
+
+msgid "The last upgrade finished."
+msgstr "上次升级已完成。"
+
+msgid "No package source configured"
+msgstr "没有配置软件源"
+
+msgid "This page only sees what the local package manager has. Add the kenzok8 feed first, then reload this page."
+msgstr "本页只看本机包管理器里有的内容。请先添加 kenzok8 软件源，然后重新加载本页。"
+
+msgid "The source is configured but has no release of these packages yet."
+msgstr "软件源已配置，但还没有这两个包的发布版本。"
+
+msgid "Could not read package versions."
+msgstr "读取软件包版本失败。"
+
+msgid "How updates work"
+msgstr "更新机制"
+
+msgid "Updates come from the kenzok8 package feed, not from GitHub."
+msgstr "升级来自 kenzok8 软件源，不查 GitHub。"
+
+msgid "Upgrading stops the service, replaces the packages and starts it again if it was enabled."
+msgstr "升级会先停服务、替换软件包，原先启用的会自动再启动。"
+
+msgid "A freshly published version needs a feed sync before it shows up here."
+msgstr "刚发布的版本要等软件源同步后才出现在这里。"
+
+msgid "Credentials in /etc/usque/config.json are not touched by upgrades."
+msgstr "升级不会改动 /etc/usque/config.json 里的凭据。"
+
+msgid "An upgrade is already running."
+msgstr "已有升级在进行中。"
+
+msgid "The upgrade could not be started."
+msgstr "升级没能启动。"
+
+msgid "Cloudflare WARP"
+msgstr "Cloudflare WARP"
+
+msgid "ByteDance (direct)"
+msgstr "字节跳动（直连）"
+
+msgid "Run the test to check all three paths separately."
+msgstr "点一次分别验证这三条路径。"
+
+msgid "This test did not go through WARP."
+msgstr "这次检测没有走 WARP。"
+
+msgid "WARP"
+msgstr "WARP"
+
+msgid "Off"
+msgstr "未启用"
+
+msgid "OK"
+msgstr "通"
+
+msgid "Failed"
+msgstr "失败"
+
+msgid "Not tested"
+msgstr "未检测"
+
+msgid "Not through WARP"
+msgstr "未走 WARP"

@@ -1,0 +1,135 @@
+#!/bin/sh /etc/rc.common
+# SPDX-License-Identifier: GPL-3.0-only
+
+START=95
+STOP=15
+USE_PROCD=1
+
+. /usr/share/usque/lib.sh
+
+new_instance() {
+	instance=$(tr -d '-' < /proc/sys/kernel/random/uuid)
+	[ "${#instance}" -eq 32 ]
+}
+
+fail_start() {
+	mkdir -p /var/run/usque
+	printf '%s\n' "$1" > /var/run/usque/error
+	logger -t usque "$1"
+	return 1
+}
+
+start_service() {
+	local mode bind port ifname routelan routelans lan endpoint
+	config_load usque
+	config_get mode main mode socks
+	config_get_bool routelan main route_lan 0
+	routelans=0
+	config_get_bool routelans main route_dns 0
+	/usr/share/usque/down.sh || {
+		fail_start route_failed
+		return 1
+	}
+	/usr/share/usque/fw.sh off || {
+		fail_start firewall_failed
+		return 1
+	}
+	rm -f /var/run/usque/error
+	[ -s "$USQUE_CONF" ] || {
+		fail_start account_missing
+		return 1
+	}
+	case "$mode" in socks | tun) : ;; *)
+		echo invalid_mode >&2
+		return 1
+		;;
+	esac
+
+	if [ "$mode" = tun ]; then
+		config_get ifname main ifname usque
+		config_get lan main lan_device br-lan
+		valid_ifname "$ifname" && [ "$ifname" != lo ] && [ "$ifname" != br-lan ] || {
+			fail_start invalid_interface
+			return 1
+		}
+		endpoint=$(jsonfilter -i "$USQUE_CONF" -e '@.endpoint_v4' 2> /dev/null || true)
+		if [ "$routelan" = 1 ]; then valid_ipv4 "$endpoint" && valid_ifname "$lan" || {
+			fail_start route_failed
+			return 1
+		}; fi
+		if [ "$routelan" = 1 ]; then lan_in_zone "$lan" || {
+			fail_start lan_zone_mismatch
+			return 1
+		}; fi
+		[ "$routelans" = 1 ] && [ "$routelan" != 1 ] && routelans=0
+		new_instance || {
+			fail_start route_failed
+			return 1
+		}
+		mkdir -p /var/run/usque
+		tmp=/var/run/usque/.instance.$$
+		printf '%s\n' "$instance" > "$tmp"
+		chmod 600 "$tmp"
+		mv -f "$tmp" "$USQUE_INSTANCE"
+		prepare_out=$(/usr/share/usque/route.sh prepare "$instance" "$ifname" "$lan" "$routelan" "$endpoint" "$routelans" 2>&1) || {
+			[ -n "$prepare_out" ] && printf '%s\n' "$prepare_out" >&2
+			[ "$(cat "$USQUE_INSTANCE" 2> /dev/null || true)" = "$instance" ] && rm -f "$USQUE_INSTANCE"
+			/usr/share/usque/route.sh stop "$instance" "$ifname" "$lan" "$routelan" "$endpoint" "$routelans" || true
+			case "$prepare_out" in
+				*dns_section_conflict* | *dns_pending*) fail_start dns_conflict ;;
+				*dns_*) fail_start dns_failed ;;
+				*) fail_start route_failed ;;
+			esac
+			return 1
+		}
+		procd_open_instance core
+		procd_set_param stderr 1
+		procd_set_param respawn
+		procd_set_param pidfile /var/run/usque.pid
+		procd_set_param command /usr/bin/usque -c "$USQUE_CONF" nativetun -n "$ifname" --always-reconnect
+		procd_close_instance
+		procd_open_instance route
+		procd_set_param stderr 1
+		procd_set_param respawn
+		procd_set_param command /usr/share/usque/route.sh run "$instance" "$ifname" "$lan" "$routelan" "$endpoint" "$routelans"
+		procd_close_instance
+		return 0
+	fi
+
+	config_get bind main bind 127.0.0.1
+	config_get port main port 1080
+	[ "$mode" = socks ] || {
+		fail_start invalid_mode
+		return 1
+	}
+	valid_bind "$bind" || {
+		fail_start invalid_bind
+		return 1
+	}
+	valid_port "$port" || {
+		fail_start invalid_port
+		return 1
+	}
+	port=$(normalize_port "$port")
+	procd_open_instance core
+	procd_set_param stderr 1
+	procd_set_param respawn
+	procd_set_param pidfile /var/run/usque.pid
+	procd_set_param command /usr/bin/usque -c "$USQUE_CONF" socks -b "$bind" -p "$port" --always-reconnect
+	procd_close_instance
+}
+
+stop_service() {
+	local cleanup_error
+	cleanup_error=
+	/usr/share/usque/down.sh || cleanup_error=route_failed
+	/usr/share/usque/fw.sh off || cleanup_error=firewall_failed
+	[ -z "$cleanup_error" ] || {
+		fail_start "$cleanup_error"
+		return 1
+	}
+}
+
+# 只有正在运行时才随配置变更重启；否则改配置会把没启用的服务拉起来
+reload_service() { /etc/init.d/usque running > /dev/null 2>&1 && restart; }
+service_triggers() { procd_add_reload_trigger usque; }

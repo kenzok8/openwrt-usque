@@ -1,0 +1,143 @@
+'use strict';
+'require view';
+'require form';
+'require uci';
+'require ui';
+'require usque.shared as shared';
+
+return view.extend({
+	load: function () {
+		return Promise.all([uci.load('usque'), shared.readStatus()]);
+	},
+
+	render: function (data) {
+		var self = this;
+		self.state = data[1];
+		self.busy = false;
+
+		var m = new form.Map('usque');
+		var s = m.section(form.NamedSection, 'main', 'usque', _('Connection settings'));
+		s.description = _('Choose how this router uses WARP. Save and apply before starting.');
+
+		var o = s.option(form.Flag, 'enabled', _('Enable and start at boot'));
+		o.rmempty = false;
+		o.description = _(
+			'Applying starts the service now and keeps it on after a reboot. Clearing it stops the service and turns the boot entry off. The start and stop buttons on the overview page only switch the service without touching the boot setting.'
+		);
+		o = s.option(form.ListValue, 'mode', _('Operating mode'));
+		o.value('socks', _('SOCKS5 · local proxy'));
+		o.value('tun', _('TUN · network interface'));
+		o.rmempty = false;
+		o = s.option(form.Value, 'bind', _('Listen address'));
+		o.retain = true;
+		o.depends('mode', 'socks');
+		o.datatype = 'ipaddr';
+		o.rmempty = false;
+		o.description = _(
+			'127.0.0.1 keeps the proxy on this router. Other addresses may expose an unauthenticated proxy to reachable clients.'
+		);
+		o = s.option(form.Value, 'port', _('Listen port'));
+		o.retain = true;
+		o.depends('mode', 'socks');
+		o.datatype = 'port';
+		o.rmempty = false;
+		o = s.option(form.Value, 'ifname', _('TUN device'));
+		o.retain = true;
+		o.depends('mode', 'tun');
+		o.rmempty = false;
+		o.validate = self.validateInterface;
+		o = s.option(form.Flag, 'route_lan', _('Route LAN IPv4'));
+		o.retain = true;
+		o.depends('mode', 'tun');
+		o.rmempty = false;
+		o.description = _(
+			'Only forwarded IPv4 from the selected LAN device is routed through TUN. IPv6 and router DNS are unchanged.'
+		);
+		o = s.option(form.Value, 'lan_device', _('LAN device'));
+		o.retain = true;
+		o.depends({ mode: 'tun', route_lan: '1' });
+		o.rmempty = false;
+		o.validate = self.validateInterface;
+		o.description = _('Use a device in the firewall LAN zone, normally br-lan.');
+		o = s.option(form.Flag, 'route_dns', _('Route LAN DNS into the tunnel'));
+		o.retain = true;
+		o.depends({ mode: 'tun', route_lan: '1' });
+		o.rmempty = false;
+		o.description = _(
+			'Sends this LAN device to a resolver inside the tunnel instead of the local one. Other clients and the router keep their current DNS.'
+		);
+		o = s.option(form.Value, 'device_name', _('Registration device name'));
+		o.rmempty = false;
+		o.description = _('Apply this name before registering. Changing it does not rename an existing account.');
+		o.validate = function (section, value) {
+			return /^[A-Za-z0-9._-]{1,32}$/.test(value || '')
+				? true
+				: _('Use 1–32 letters, numbers, dots, underscores or hyphens.');
+		};
+
+		self.map = m;
+		return m.render().then(function (formNode) {
+			var body = E('div', { class: 'usque-grid' }, [
+				E('section', { class: 'usque-card usque-settings' }, [formNode]),
+				E('aside', { class: 'usque-sidebar' }, [
+					E('section', { class: 'usque-card' }, [
+						E('h3', {}, _('What changes on apply')),
+						E('ul', { class: 'usque-list' }, [
+							E('li', {}, _('Applying restarts the service, so expect a short outage.')),
+							E('li', {}, _('Turning it off stops the service and removes its routing rules.')),
+							E('li', {}, _('The router keeps its own DNS unless the LAN DNS option is on.')),
+							E('li', {}, _('Account credentials are not touched by saving settings.'))
+						])
+					]),
+					E('p', { class: 'usque-hint' }, [
+						_('Status and the connectivity test are on the overview page.'),
+						' ',
+						E('a', { href: L.url('admin/services/usque/overview') }, _('Open overview'))
+					])
+				])
+			]);
+			return shared.page(self.state.ui_version, body);
+		});
+	},
+
+	validateInterface: function (section, value) {
+		return /^[A-Za-z][A-Za-z0-9._-]{0,14}$/.test(value || '')
+			? true
+			: _('Start with a letter and use at most 15 letters, numbers, dots, underscores or hyphens.');
+	},
+
+	handleSaveApply: function (ev, mode) {
+		var self = this;
+		if (self.busy) return Promise.resolve();
+		self.busy = true;
+		return self
+			.handleSave(ev)
+			.then(function () {
+				return ui.changes.apply(mode === '0');
+			})
+			.then(function () {
+				var enabled = uci.get('usque', 'main', 'enabled') === '1';
+				return shared
+					.init(enabled ? 'enable' : 'disable')
+					.then(function () {
+						return shared.init(enabled ? 'restart' : 'stop');
+					})
+					.then(function () {
+						return shared.waitForService(enabled);
+					})
+					.then(function () {
+						shared.notify(_('Settings applied.'));
+					});
+			})
+			.catch(function (error) {
+				shared.notify(
+					shared.errors[error && error.message] ||
+						_('The operation failed. Your settings are kept. Refresh the status and try again.'),
+					true
+				);
+			})
+			.finally(function () {
+				self.busy = false;
+			});
+	}
+});

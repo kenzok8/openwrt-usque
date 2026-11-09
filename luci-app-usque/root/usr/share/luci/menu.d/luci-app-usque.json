@@ -1,0 +1,51 @@
+{
+	"admin/services/usque": {
+		"title": "Usque",
+		"order": 59,
+		"action": {
+			"type": "firstchild"
+		},
+		"depends": {
+			"acl": [ "luci-app-usque" ]
+		}
+	},
+	"admin/services/usque/overview": {
+		"title": "Overview",
+		"order": 10,
+		"action": {
+			"type": "view",
+			"path": "usque/overview"
+		}
+	},
+	"admin/services/usque/settings": {
+		"title": "Settings",
+		"order": 20,
+		"action": {
+			"type": "view",
+			"path": "usque/settings"
+		}
+	},
+	"admin/services/usque/logs": {
+		"title": "Logs",
+		"order": 30,
+		"action": {
+			"type": "view",
+			"path": "usque/logs"
+		}
+	},
+	"admin/services/usque/updates": {
+		"title": "Updates",
+		"order": 40,
+		"action": {
+			"type": "view",
+			"path": "usque/updates"
+		}
+	},
+	"admin/services/usque/main": {
+		"hidden": true,
+		"action": {
+			"type": "alias",
+			"path": "admin/services/usque/overview"
+		}
+	}
+}

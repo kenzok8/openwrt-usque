@@ -1,0 +1,76 @@
+name: Build OpenWrt packages
+on:
+  push:
+    branches: [main]
+    paths: ['usque/**', 'luci-app-usque/**', 'scripts/**', '.github/workflows/build.yml']
+  pull_request:
+  workflow_dispatch:
+  workflow_call:
+permissions:
+  contents: read
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  check:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+      - run: bash scripts/check.sh
+  packages:
+    needs: check
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix:
+        sdk: ['24.10', '25.12']
+        arch: [x86_64, aarch64_generic, aarch64_cortex-a53, aarch64_cortex-a72, aarch64_cortex-a76, arm_cortex-a7_neon-vfpv4, arm_cortex-a9]
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - name: Check out fixed SDK action
+        uses: actions/checkout@v7
+        with:
+          repository: kenzok8/gh-action-sdk
+          ref: 44f98c51d04aebd1aa79fe4f603559c1ec2085da
+          path: .sdk-action
+          persist-credentials: false
+      - name: Prepare artifact directory
+        run: mkdir -p artifacts/sdk
+      - name: Build packages
+        uses: ./.sdk-action
+        env:
+          ARCH: ${{ matrix.arch }}-openwrt-${{ matrix.sdk }}
+          CONTAINER: immortalwrt/sdk
+          FEEDNAME: usque
+          PACKAGES: usque luci-app-usque
+          NO_SHFMT_CHECK: '1'
+          ARTIFACTS_DIR: ${{ github.workspace }}/artifacts/sdk
+      - name: Verify package set
+        env:
+          SDK: ${{ matrix.sdk }}
+          ARCH: ${{ matrix.arch }}
+        run: python3 scripts/verify-packages.py --packages-dir "artifacts/sdk/bin/packages/$ARCH/usque" --sdk "$SDK" --arch "$ARCH" --output-dir artifacts/verified
+      - name: Verify APK payloads with the SDK tool
+        if: matrix.sdk == '25.12'
+        env:
+          ARCH: ${{ matrix.arch }}
+        run: |
+          docker run --rm --entrypoint /bin/bash \
+            -v "$GITHUB_WORKSPACE:/feed:ro" \
+            sdk /feed/scripts/check-apk-payload.sh "/feed/artifacts/sdk/bin/packages/$ARCH/usque" /feed "$ARCH"
+      - uses: actions/upload-artifact@v7
+        with:
+          name: usque-sdk${{ matrix.sdk }}-${{ matrix.arch }}-${{ github.sha }}
+          path: artifacts/verified/
+          if-no-files-found: error
+          retention-days: 14

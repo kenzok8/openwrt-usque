@@ -1,0 +1,43 @@
+{
+	"luci-app-usque": {
+		"description": "Grant access to Usque status and registration",
+		"read": {
+			"file": {
+				"/usr/share/usque/status.sh": [
+					"exec"
+				],
+				"/usr/share/usque/diagnostics.sh": [
+					"exec"
+				],
+				"/usr/share/usque/logs.sh": [
+					"exec"
+				],
+				"/usr/share/usque/pkg-info.sh": [
+					"exec"
+				],
+				"/usr/share/usque/pkg-update.sh": [
+					"exec"
+				]
+			},
+			"uci": [
+				"usque"
+			]
+		},
+		"write": {
+			"file": {
+				"/usr/share/usque/register.sh": [
+					"exec"
+				],
+				"/etc/init.d/usque": [
+					"exec"
+				],
+				"/usr/share/usque/pkg-update.sh": [
+					"exec"
+				]
+			},
+			"uci": [
+				"usque"
+			]
+		}
+	}
+}

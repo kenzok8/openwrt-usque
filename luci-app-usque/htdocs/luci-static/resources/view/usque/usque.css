@@ -1,0 +1,1054 @@
+/* SPDX-License-Identifier: GPL-3.0-only */
+
+/* Usque — Apple-style design system.
+   与 honk 一致的做法：页面透明、内容放进半透明卡片，用系统蓝做强调色，
+   这样在 Argon / Bootstrap / 深色主题下都能自适应，不用自己写死底色。 */
+
+.usque-app {
+	/* 强调色 — Apple 系统蓝 */
+	--uq-accent-rgb: 0, 122, 255;
+	--uq-accent: rgba(var(--uq-accent-rgb), 1);
+	--uq-accent-border: rgba(var(--uq-accent-rgb), 0.34);
+	--uq-accent-soft: rgba(var(--uq-accent-rgb), 0.09);
+	--uq-accent-soft-hover: rgba(var(--uq-accent-rgb), 0.16);
+
+	/* 状态色 — Apple 系统绿 / 红 / 橙 */
+	--uq-green-rgb: 52, 199, 89;
+	--uq-green: #34c759;
+	--uq-red: #ff3b30;
+	--uq-orange: #ff9500;
+
+	/* 半透明表面：跟随宿主主题的明暗 */
+	--uq-card: rgba(128, 128, 128, 0.04);
+	--uq-card-border: rgba(128, 128, 128, 0.14);
+	--uq-switch-off: rgba(120, 120, 128, 0.24);
+	--uq-field: rgba(128, 128, 128, 0.05);
+	--uq-field-border: rgba(128, 128, 128, 0.22);
+	--uq-hover: rgba(128, 128, 128, 0.08);
+	--uq-hairline: rgba(128, 128, 128, 0.16);
+	--uq-muted: rgba(74, 86, 106, 0.62);
+	--uq-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+	--uq-shadow-hover: 0 8px 28px rgba(0, 0, 0, 0.08);
+
+	--uq-radius: 14px;
+	--uq-radius-sm: 10px;
+	--uq-font: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', 'PingFang SC',
+		'Hiragino Sans GB', 'Helvetica Neue', 'Microsoft YaHei', sans-serif;
+	--uq-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', monospace;
+
+	font-family: var(--uq-font);
+	width: 100%;
+	max-width: 1180px;
+	min-width: 0;
+	margin: 0 auto;
+	padding: 0;
+	background: transparent;
+	border: 0;
+	border-radius: 0;
+	color: inherit;
+	-webkit-font-smoothing: antialiased;
+}
+
+.usque-app[data-theme='dark'] {
+	--uq-muted: rgba(235, 235, 245, 0.6);
+	--uq-card: rgba(128, 128, 128, 0.07);
+	--uq-card-border: rgba(128, 128, 128, 0.22);
+	--uq-field: rgba(128, 128, 128, 0.09);
+	--uq-field-border: rgba(128, 128, 128, 0.28);
+	--uq-hairline: rgba(128, 128, 128, 0.24);
+	--uq-switch-off: rgba(120, 120, 128, 0.4);
+	--uq-shadow: 0 4px 20px rgba(0, 0, 0, 0.28);
+	--uq-shadow-hover: 0 8px 28px rgba(0, 0, 0, 0.36);
+}
+
+.usque-app,
+.usque-app *,
+.usque-app *::before,
+.usque-app *::after {
+	box-sizing: border-box;
+}
+
+/* Argon 给 header::after 画了一条装饰色带，会把标题压住 */
+.usque-app .usque-header::before,
+.usque-app .usque-header::after {
+	content: none !important;
+	display: none !important;
+}
+
+.usque-app h2,
+.usque-app h3,
+.usque-app p {
+	color: inherit;
+	margin: 0;
+	padding: 0;
+	background: transparent !important;
+	box-shadow: none !important;
+	border-radius: 0 !important;
+}
+
+.usque-app h2 {
+	font-size: 22px;
+	line-height: 1.15;
+	font-weight: 700;
+	letter-spacing: -0.021em;
+}
+
+.usque-app h3 {
+	font-size: 15.5px;
+	line-height: 1.35;
+	font-weight: 650;
+	letter-spacing: -0.01em;
+}
+
+/* ---------- 页头 ---------- */
+
+.usque-app .usque-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	gap: 16px;
+	margin: 0 0 14px;
+	padding: 0;
+	height: auto;
+	min-height: 0;
+	background: none !important;
+	border: 0;
+	border-radius: 0;
+	box-shadow: none !important;
+	position: static;
+	color: inherit;
+}
+
+.usque-brand {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	min-width: 0;
+}
+
+.usque-brand img {
+	flex: 0 0 36px;
+	width: 36px;
+	height: 36px;
+	border-radius: var(--uq-radius-sm);
+	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+}
+
+.usque-brand p {
+	margin-top: 3px;
+	font-size: 12.5px;
+	line-height: 1.4;
+	color: var(--uq-muted);
+}
+
+/* 小号大写标签：卡片眉标、协议标记共用 */
+.usque-protocol,
+.usque-eyebrow {
+	font-family: var(--uq-mono);
+	font-size: 10.5px;
+	line-height: 1.4;
+	letter-spacing: 0.09em;
+	text-transform: uppercase;
+	color: var(--uq-muted);
+}
+
+.usque-protocol {
+	padding: 5px 12px;
+	border: 1px solid var(--uq-card-border);
+	border-radius: 999px;
+	background: var(--uq-card);
+	white-space: nowrap;
+	flex: 0 0 auto;
+}
+
+/* ---------- 状态卡 ---------- */
+
+.usque-status {
+	position: relative;
+	padding: 16px 18px;
+	background: var(--uq-card);
+	border: 1px solid var(--uq-card-border);
+	border-radius: var(--uq-radius);
+	box-shadow: var(--uq-shadow);
+	backdrop-filter: blur(6px);
+	-webkit-backdrop-filter: blur(6px);
+	overflow: hidden;
+	transition: box-shadow 0.25s ease;
+}
+
+/* 顶部状态色细线，替代原来的大圆点 */
+.usque-status::before {
+	content: '';
+	position: absolute;
+	inset: 0 0 auto 0;
+	height: 2px;
+	background: var(--uq-muted);
+	opacity: 0.5;
+}
+
+.usque-status[data-tone='running']::before {
+	background: var(--uq-green);
+	opacity: 1;
+}
+
+.usque-status[data-tone='error']::before {
+	background: var(--uq-red);
+	opacity: 1;
+}
+
+.usque-status-main {
+	display: flex;
+	gap: 11px;
+	align-items: flex-start;
+}
+
+.usque-status-main h3 {
+	font-size: 17px;
+}
+
+.usque-status-main p {
+	margin-top: 5px;
+	color: var(--uq-muted);
+	font-size: 13px;
+	line-height: 1.55;
+}
+
+.usque-dot {
+	width: 9px;
+	height: 9px;
+	border-radius: 50%;
+	background: var(--uq-muted);
+	flex: 0 0 9px;
+	margin-top: 8px;
+	box-shadow: 0 0 0 4px var(--uq-hover);
+	transition: background 0.25s ease;
+}
+
+.usque-status[data-tone='running'] .usque-dot {
+	background: var(--uq-green);
+	box-shadow: 0 0 0 4px rgba(var(--uq-green-rgb), 0.16);
+}
+
+.usque-status[data-tone='error'] .usque-dot {
+	background: var(--uq-red);
+	box-shadow: 0 0 0 4px rgba(255, 59, 48, 0.16);
+}
+
+.usque-status[data-tone='error'] .usque-status-main h3 {
+	color: var(--uq-red);
+}
+
+/* 事实区：iOS 式「标签 / 值」两列 */
+.usque-facts {
+	display: grid;
+	grid-template-columns: 1fr 1.3fr 1fr;
+	margin: 16px 0 0;
+	padding: 16px 0;
+	border-top: 1px solid var(--uq-hairline);
+	border-bottom: 1px solid var(--uq-hairline);
+	gap: 18px;
+}
+
+.usque-facts > div {
+	min-width: 0;
+	padding-left: 18px;
+	border-left: 1px solid var(--uq-hairline);
+}
+
+.usque-facts > div:first-child {
+	padding-left: 0;
+	border-left: 0;
+}
+
+.usque-facts dt {
+	color: var(--uq-muted);
+	font-size: 11px;
+	letter-spacing: 0.02em;
+	margin-bottom: 6px;
+}
+
+.usque-facts dd {
+	color: inherit;
+	font-size: 14px;
+	font-weight: 600;
+	margin: 0;
+	overflow-wrap: anywhere;
+	font-variant-numeric: tabular-nums;
+}
+
+.usque-actions {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	flex-wrap: wrap;
+	margin-top: 16px;
+}
+
+/* ---------- 按钮 ---------- */
+
+.usque-button {
+	appearance: none;
+	-webkit-appearance: none;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-height: 0;
+	padding: 7px 16px;
+	border-radius: 999px;
+	border: 1px solid var(--uq-field-border);
+	background: transparent;
+	color: inherit;
+	font-family: inherit;
+	font-size: 13px;
+	font-weight: 500;
+	line-height: 1.35;
+	cursor: pointer;
+	white-space: nowrap;
+	touch-action: manipulation;
+	box-shadow: none;
+	transition:
+		background-color 0.18s ease,
+		border-color 0.18s ease,
+		opacity 0.18s ease,
+		transform 0.12s ease;
+}
+
+.usque-button:active {
+	transform: scale(0.98);
+}
+
+.usque-button:disabled {
+	opacity: 0.42;
+	cursor: not-allowed;
+	transform: none;
+}
+
+.usque-button:focus-visible,
+.usque-app a:focus-visible {
+	outline: 2px solid var(--uq-accent);
+	outline-offset: 2px;
+}
+
+.usque-button-primary {
+	color: #fff;
+	border-color: transparent;
+	background: var(--uq-accent);
+	box-shadow: 0 2px 10px rgba(var(--uq-accent-rgb), 0.28);
+}
+
+.usque-button-link {
+	padding-left: 10px;
+	padding-right: 10px;
+	color: var(--uq-accent);
+	border-color: transparent;
+	background: transparent;
+	margin-left: auto;
+}
+
+.usque-button.is-busy {
+	opacity: 0.5;
+	cursor: wait;
+}
+
+@media (hover: hover) {
+	.usque-button:not(:disabled):hover {
+		background: var(--uq-hover);
+	}
+
+	.usque-button-primary:not(:disabled):hover {
+		background: rgba(var(--uq-accent-rgb), 0.88);
+		box-shadow: 0 4px 14px rgba(var(--uq-accent-rgb), 0.34);
+	}
+
+	.usque-button-link:not(:disabled):hover {
+		background: var(--uq-accent-soft);
+	}
+}
+
+/* ---------- 主体两栏 ---------- */
+
+.usque-layout {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) 300px;
+	gap: 18px;
+	margin-top: 18px;
+	align-items: start;
+}
+
+.usque-settings {
+	min-width: 0;
+	padding: 15px 18px 6px;
+	background: var(--uq-card);
+	border: 1px solid var(--uq-card-border);
+	border-radius: var(--uq-radius);
+	box-shadow: var(--uq-shadow);
+	backdrop-filter: blur(6px);
+	-webkit-backdrop-filter: blur(6px);
+}
+
+/* ---------- 表单：清掉主题卡片样式 ---------- */
+
+.usque-app .cbi-map {
+	margin: 0;
+	padding: 0;
+	background: transparent !important;
+	border: 0 !important;
+	border-radius: 0 !important;
+	box-shadow: none !important;
+}
+
+.usque-app .cbi-section,
+.usque-app .cbi-section-node {
+	background: transparent !important;
+	border: 0 !important;
+	border-radius: 0 !important;
+	box-shadow: none !important;
+	padding: 0;
+	margin: 0;
+}
+
+.usque-app .cbi-section > h3 {
+	padding: 0 !important;
+	margin-bottom: 6px;
+	border: 0 !important;
+	background: transparent !important;
+	box-shadow: none !important;
+	font-size: 15px;
+	font-weight: 650;
+}
+
+.usque-app .cbi-section-descr {
+	color: var(--uq-muted);
+	font-size: 12.5px;
+	line-height: 1.6;
+	margin-bottom: 10px;
+}
+
+.usque-app .cbi-value {
+	display: grid;
+	grid-template-columns: minmax(130px, 34%) minmax(0, 1fr);
+	align-items: center;
+	gap: 16px;
+	padding: 13px 0;
+	margin: 0;
+	border: 0;
+	border-bottom: 1px solid var(--uq-hairline);
+	background: transparent;
+}
+
+.usque-app .cbi-value:last-child {
+	border-bottom: 0;
+}
+
+.usque-app .cbi-value.hidden {
+	display: none !important;
+}
+
+.usque-app .cbi-value > label.cbi-value-title {
+	float: none;
+	width: auto;
+	padding: 0;
+	margin: 0;
+	color: inherit;
+	font-size: 13px;
+	font-weight: 600;
+	text-align: left;
+	line-height: 1.4;
+	white-space: normal;
+}
+
+.usque-app .cbi-value-field {
+	margin: 0;
+	padding: 0;
+	min-width: 0;
+}
+
+.usque-app .cbi-value-description {
+	color: var(--uq-muted);
+	font-size: 12px;
+	line-height: 1.6;
+	padding: 7px 0 0;
+	max-width: 52ch;
+}
+
+/* 输入框：iOS 圆角 + 轻微内阴影 */
+.usque-app input[type='text'],
+.usque-app input[type='number'],
+.usque-app input[type='password'],
+.usque-app select,
+.usque-app .cbi-input-select,
+.usque-app .cbi-input-text {
+	width: 100%;
+	max-width: 100%;
+	min-height: 34px;
+	padding: 6px 10px;
+	border: 1px solid var(--uq-field-border);
+	border-radius: var(--uq-radius-sm);
+	background: var(--uq-field);
+	color: inherit;
+	font-family: inherit;
+	font-size: 13px;
+	line-height: 1.4;
+	box-shadow: none;
+	transition:
+		border-color 0.18s ease,
+		background-color 0.18s ease;
+}
+
+.usque-app input:focus,
+.usque-app select:focus {
+	border-color: var(--uq-accent-border);
+	background: transparent;
+	outline: 3px solid var(--uq-accent-soft);
+	outline-offset: 0;
+}
+
+/* iOS 开关：真 input 只留取值，外观用背景绘制 */
+.usque-app input[type='checkbox'] {
+	appearance: none !important;
+	-webkit-appearance: none !important;
+	width: 46px !important;
+	height: 28px !important;
+	min-width: 46px !important;
+	margin: 0 !important;
+	border: 0 !important;
+	border-radius: 999px;
+	/* 轨道和滑块都用背景图层画：Argon 对 :checked 用 !important 塞对勾图，
+	   这里只能同样用 !important 覆盖，并把主题设的 background-size 压回去 */
+	background:
+		radial-gradient(circle 11px at 14px 14px, #fff 99%, transparent 100%) 0 0 / 100% 100%
+			no-repeat,
+		linear-gradient(var(--uq-switch-off), var(--uq-switch-off)) 0 0 / 100% 100% no-repeat !important;
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12) inset;
+	cursor: pointer;
+	transition: background 0.22s ease;
+}
+
+.usque-app input[type='checkbox']:checked {
+	background:
+		radial-gradient(circle 11px at 32px 14px, #fff 99%, transparent 100%) 0 0 / 100% 100%
+			no-repeat,
+		linear-gradient(var(--uq-green), var(--uq-green)) 0 0 / 100% 100% no-repeat !important;
+}
+
+.usque-app input[type='checkbox']:focus-visible {
+	outline: 3px solid var(--uq-accent-soft);
+	outline-offset: 2px;
+}
+
+/* ---------- 侧栏 ---------- */
+
+/* ---------- 通用卡片与列表 ---------- */
+
+.usque-sidebar {
+	display: grid;
+	gap: 14px;
+	min-width: 0;
+}
+
+.usque-card {
+	min-width: 0;
+	padding: 15px 17px;
+	background: var(--uq-card);
+	border: 1px solid var(--uq-card-border);
+	border-radius: var(--uq-radius);
+	box-shadow: var(--uq-shadow);
+	backdrop-filter: blur(6px);
+	-webkit-backdrop-filter: blur(6px);
+}
+
+.usque-card-head {
+	display: flex;
+	align-items: flex-start;
+	justify-content: space-between;
+	gap: 14px;
+	flex-wrap: wrap;
+	margin-bottom: 12px;
+}
+
+.usque-card-head p,
+.usque-card > p {
+	margin: 6px 0 0;
+	color: var(--uq-muted);
+	font-size: 12.5px;
+	line-height: 1.6;
+	max-width: 62ch;
+}
+
+.usque-list {
+	margin: 10px 0 0;
+	padding: 0;
+	list-style: none;
+	color: var(--uq-muted);
+	font-size: 12.5px;
+	line-height: 1.65;
+}
+
+.usque-list li {
+	position: relative;
+	padding: 0 0 0 15px;
+	margin-bottom: 9px;
+}
+
+.usque-list li:last-child {
+	margin-bottom: 0;
+}
+
+.usque-list li::before {
+	content: '';
+	position: absolute;
+	left: 2px;
+	top: 8px;
+	width: 4px;
+	height: 4px;
+	border-radius: 50%;
+	background: currentColor;
+	opacity: 0.45;
+}
+
+.usque-hint {
+	color: var(--uq-muted);
+	font-size: 12px;
+	line-height: 1.6;
+	margin: 10px 0 0;
+}
+
+.usque-hint a {
+	color: var(--uq-accent);
+}
+
+.usque-inline-check {
+	display: inline-flex;
+	align-items: center;
+	gap: 7px;
+	font-size: 12.5px;
+	color: var(--uq-muted);
+	white-space: nowrap;
+}
+
+.usque-inline-check input[type='checkbox'] {
+	width: 18px !important;
+	height: 18px !important;
+	min-width: 18px !important;
+	border: 1.5px solid var(--uq-field-border) !important;
+	border-radius: 6px;
+	background: transparent !important;
+	box-shadow: none;
+}
+
+.usque-inline-check input[type='checkbox']:checked {
+	border-color: var(--uq-accent) !important;
+	background: var(--uq-accent) !important;
+}
+
+/* ---------- 页面栅格 ---------- */
+
+.usque-grid {
+	display: grid;
+	gap: 13px;
+}
+
+.usque-columns {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+	gap: 13px;
+	align-items: start;
+}
+
+.usque-grid > .usque-columns > .usque-card {
+	height: 100%;
+}
+
+/* ---------- 表格 ---------- */
+
+.usque-table {
+	width: 100%;
+	border-collapse: collapse;
+	font-size: 13px;
+	margin-top: 4px;
+}
+
+.usque-table th {
+	text-align: left;
+	font-size: 11px;
+	font-weight: 600;
+	letter-spacing: 0.02em;
+	color: var(--uq-muted);
+	padding: 0 0 8px;
+	border-bottom: 1px solid var(--uq-hairline);
+}
+
+.usque-table td {
+	padding: 10px 0;
+	border-bottom: 1px solid var(--uq-hairline);
+	vertical-align: top;
+	font-variant-numeric: tabular-nums;
+}
+
+.usque-table tr:last-child td {
+	border-bottom: 0;
+}
+
+.usque-table td .usque-hint {
+	display: inline;
+	margin: 0;
+	font-size: 11.5px;
+}
+
+/* ---------- 连接检测：图标 + 信号格 ---------- */
+
+.usque-probe {
+	display: grid;
+	gap: 2px;
+	margin: 14px 0 0;
+	padding: 4px 0;
+	border-top: 1px solid var(--uq-hairline);
+	border-bottom: 1px solid var(--uq-hairline);
+}
+
+.usque-probe-row {
+	display: grid;
+	grid-template-columns: 22px minmax(0, 1fr) auto auto;
+	align-items: center;
+	gap: 10px;
+	padding: 9px 2px;
+	font-size: 13px;
+}
+
+.usque-probe-icon {
+	width: 20px;
+	height: 20px;
+	background-repeat: no-repeat;
+	background-position: center;
+	background-size: 20px 20px;
+	opacity: 0.9;
+}
+
+.usque-probe-icon[data-id='warp'] {
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23f6821f' d='M7.2 19h9.9a3.9 3.9 0 0 0 .5-7.77 5.8 5.8 0 0 0-10.9-1.6A3.9 3.9 0 0 0 7.2 19z'/%3E%3C/svg%3E");
+}
+
+.usque-probe-icon[data-id='youtube'] {
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect x='2' y='5' width='20' height='14' rx='4' fill='%23ff0033'/%3E%3Cpath fill='%23fff' d='M10 9.2l6 2.8-6 2.8z'/%3E%3C/svg%3E");
+}
+
+.usque-probe-icon[data-id='domestic'] {
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23325ab4' d='M15.5 3.6v9.9a2.9 2.9 0 1 1-2-2.74V7.2l-5 1.2v7.6a2.9 2.9 0 1 1-2-2.74V6.1z'/%3E%3C/svg%3E");
+}
+
+.usque-app[data-theme='dark'] .usque-probe-icon {
+	opacity: 1;
+}
+
+.usque-probe-name {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.usque-bars {
+	display: inline-flex;
+	align-items: flex-end;
+	gap: 2.5px;
+	height: 14px;
+}
+
+.usque-bars i {
+	display: block;
+	width: 3px;
+	border-radius: 1px;
+	background: var(--uq-field-border);
+	transition: background-color 0.2s ease;
+}
+
+.usque-bars i:nth-child(1) {
+	height: 5px;
+}
+
+.usque-bars i:nth-child(2) {
+	height: 8px;
+}
+
+.usque-bars i:nth-child(3) {
+	height: 11px;
+}
+
+.usque-bars i:nth-child(4) {
+	height: 14px;
+}
+
+.usque-probe-row[data-state='pass'][data-level='1'] .usque-bars i:nth-child(-n + 1),
+.usque-probe-row[data-state='pass'][data-level='2'] .usque-bars i:nth-child(-n + 2),
+.usque-probe-row[data-state='pass'][data-level='3'] .usque-bars i:nth-child(-n + 3),
+.usque-probe-row[data-state='pass'][data-level='4'] .usque-bars i:nth-child(-n + 4) {
+	background: var(--uq-green);
+}
+
+.usque-probe-row[data-state='fail'] .usque-bars i {
+	background: rgba(255, 59, 48, 0.42);
+}
+
+.usque-probe-value {
+	font-family: var(--uq-mono);
+	font-size: 11.5px;
+	color: var(--uq-muted);
+	white-space: nowrap;
+	font-variant-numeric: tabular-nums;
+	min-width: 46px;
+	text-align: right;
+}
+
+.usque-probe-row[data-state='pass'] .usque-probe-value {
+	color: var(--uq-good);
+}
+
+.usque-probe-row[data-state='fail'] .usque-probe-value {
+	color: var(--uq-bad);
+}
+
+.usque-probe-note {
+	margin-top: 10px;
+}
+
+/* ---------- 日志与代码 ---------- */
+
+.usque-log {
+	margin: 12px 0 0;
+	padding: 14px;
+	max-height: 420px;
+	overflow: auto;
+	background: var(--uq-field);
+	border: 1px solid var(--uq-field-border);
+	border-radius: var(--uq-radius-sm);
+	font-family: var(--uq-mono);
+	font-size: 11.5px;
+	line-height: 1.6;
+	color: inherit;
+	white-space: pre-wrap;
+	word-break: break-word;
+}
+
+.usque-note:empty {
+	display: none;
+}
+
+.usque-note {
+	margin-top: 14px;
+	padding: 14px;
+	border-radius: var(--uq-radius-sm);
+	background: rgba(255, 149, 0, 0.09);
+	border: 1px solid rgba(255, 149, 0, 0.28);
+	font-size: 12.5px;
+	line-height: 1.6;
+}
+
+.usque-note p {
+	margin: 6px 0 10px;
+	color: var(--uq-muted);
+}
+
+.usque-code {
+	display: block;
+	padding: 10px 12px;
+	border-radius: var(--uq-radius-sm);
+	background: var(--uq-field);
+	border: 1px solid var(--uq-field-border);
+	font-family: var(--uq-mono);
+	font-size: 11.5px;
+	overflow-x: auto;
+	white-space: pre;
+}
+
+.usque-footer {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	gap: 16px;
+	margin-top: 18px;
+	padding-top: 14px;
+	border-top: 1px solid var(--uq-hairline);
+	color: var(--uq-muted);
+	font-size: 11.5px;
+	line-height: 1.6;
+}
+
+.usque-app a {
+	color: var(--uq-accent);
+	text-decoration: none;
+}
+
+.usque-app a:hover {
+	text-decoration: underline;
+}
+
+.usque-footer a {
+	flex: 0 0 auto;
+	white-space: nowrap;
+}
+
+.usque-consent {
+	display: flex;
+	gap: 10px;
+	align-items: flex-start;
+	margin: 18px 0;
+	line-height: 1.65;
+	font-size: 13px;
+}
+
+.usque-consent input {
+	margin-top: 2px;
+}
+
+/* ---------- 弹窗 ---------- */
+
+/* 弹窗挂在 body 下，用 .usque-app 包一层只为拿到设计变量 */
+.usque-modal {
+	max-width: none;
+	margin: 0;
+	padding: 0;
+}
+
+.usque-modal p {
+	color: inherit;
+	font-size: 13.5px;
+	line-height: 1.65;
+}
+
+.usque-modal .usque-consent {
+	margin: 16px 0 20px;
+}
+
+/* 同意条款用回方形勾选框，不要续成开关 */
+.usque-modal .usque-consent input[type='checkbox'] {
+	width: 18px !important;
+	height: 18px !important;
+	min-width: 18px !important;
+	border: 1.5px solid var(--uq-field-border) !important;
+	border-radius: 6px;
+	background: transparent !important;
+	box-shadow: none;
+}
+
+.usque-modal .usque-consent input[type='checkbox']:checked {
+	border-color: var(--uq-accent) !important;
+	background: var(--uq-accent) !important;
+}
+
+.usque-modal-actions {
+	display: flex;
+	justify-content: flex-end;
+	gap: 8px;
+}
+
+.usque-button-danger {
+	color: var(--uq-red);
+	border-color: rgba(255, 59, 48, 0.34);
+	background: rgba(255, 59, 48, 0.08);
+}
+
+@media (hover: hover) {
+	.usque-button-danger:not(:disabled):hover {
+		background: rgba(255, 59, 48, 0.16);
+		border-color: rgba(255, 59, 48, 0.5);
+	}
+}
+
+/* ---------- 响应式 ---------- */
+
+@media (max-width: 1000px) {
+	.usque-layout {
+		grid-template-columns: minmax(0, 1fr);
+	}
+
+	.usque-columns {
+		grid-template-columns: minmax(0, 1fr);
+	}
+}
+
+@media (max-width: 640px) {
+	.usque-app h2 {
+		font-size: 22px;
+	}
+
+	.usque-brand img {
+		flex: 0 0 38px;
+		width: 38px;
+		height: 38px;
+	}
+
+	.usque-protocol {
+		display: none;
+	}
+
+	.usque-status,
+	.usque-settings,
+	.usque-diagnostic,
+	.usque-boundary {
+		padding: 16px;
+	}
+
+	.usque-status-main h3 {
+		font-size: 17px;
+	}
+
+	.usque-facts {
+		grid-template-columns: minmax(0, 1fr);
+		gap: 10px;
+		padding: 14px 0;
+	}
+
+	.usque-facts > div {
+		display: flex;
+		justify-content: space-between;
+		align-items: baseline;
+		gap: 12px;
+		padding-left: 0;
+		border-left: 0;
+	}
+
+	.usque-facts dt {
+		margin: 0;
+		white-space: nowrap;
+	}
+
+	.usque-facts dd {
+		text-align: right;
+	}
+
+	.usque-actions {
+		gap: 7px;
+	}
+
+	.usque-button {
+		padding: 8px 14px;
+	}
+
+	.usque-button-link {
+		margin-left: 0;
+	}
+
+	.usque-app .cbi-value {
+		grid-template-columns: minmax(0, 1fr);
+		gap: 6px;
+		padding: 11px 0;
+	}
+
+	.usque-footer {
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 6px;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.usque-button,
+	.usque-status,
+	.usque-dot,
+	.usque-app input[type='checkbox'] {
+		transition: none;
+	}
+
+	.usque-button:active {
+		transform: none;
+	}
+}
