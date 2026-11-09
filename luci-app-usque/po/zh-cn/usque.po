@@ -177,8 +177,8 @@ msgstr "启动服务"
 msgid "Start with a letter and use at most 15 letters, numbers, dots, underscores or hyphens."
 msgstr "以字母开头，最多 15 位，可用字母、数字、点、下划线或连字符。"
 
-msgid "Applying starts the service now and keeps it on after a reboot. Clearing it stops the service and turns the boot entry off. The start and stop buttons on the overview page only switch the service without touching the boot setting."
-msgstr "保存并应用会立即启动服务，并在开机时自动启动；取消勾选会停止服务、关掉开机自启。上方`启动服务 / 停止服务`按钮只临时启停，不改开机设置。"
+msgid "Applying starts the service now and keeps it on after a reboot."
+msgstr "保存并应用会立即启动服务，并在开机时自动启动。"
 
 msgid "Running now, but not set to start at boot. A reboot stops it."
 msgstr "正在运行，但没有设为开机自启，重启路由器后会停掉。"
@@ -470,3 +470,15 @@ msgstr "未检测"
 
 msgid "Not through WARP"
 msgstr "未走 WARP"
+
+msgid "127.0.0.1 stays on this router. Other addresses expose an unauthenticated proxy."
+msgstr "127.0.0.1 仅供本机；其他地址会向可达客户端开放无认证代理。"
+
+msgid "Only this device uses the resolver inside the tunnel."
+msgstr "只让这台设备用隧道内的解析器，其他设备与路由器不变。"
+
+msgid "Apply before registering. Changing it does not rename an existing account."
+msgstr "注册前先应用；修改不会重命名已有账号。"
+
+msgid "Only forwarded IPv4 from this device goes through TUN. IPv6 stays as is."
+msgstr "只接管这台设备转发的 IPv4，IPv6 保持原样。"

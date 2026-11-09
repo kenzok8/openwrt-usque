@@ -22,9 +22,7 @@ return view.extend({
 
 		var o = s.option(form.Flag, 'enabled', _('Enable and start at boot'));
 		o.rmempty = false;
-		o.description = _(
-			'Applying starts the service now and keeps it on after a reboot. Clearing it stops the service and turns the boot entry off. The start and stop buttons on the overview page only switch the service without touching the boot setting.'
-		);
+		o.description = _('Applying starts the service now and keeps it on after a reboot.');
 		o = s.option(form.ListValue, 'mode', _('Operating mode'));
 		o.value('socks', _('SOCKS5 · local proxy'));
 		o.value('tun', _('TUN · network interface'));
@@ -34,9 +32,7 @@ return view.extend({
 		o.depends('mode', 'socks');
 		o.datatype = 'ipaddr';
 		o.rmempty = false;
-		o.description = _(
-			'127.0.0.1 keeps the proxy on this router. Other addresses may expose an unauthenticated proxy to reachable clients.'
-		);
+		o.description = _('127.0.0.1 stays on this router. Other addresses expose an unauthenticated proxy.');
 		o = s.option(form.Value, 'port', _('Listen port'));
 		o.retain = true;
 		o.depends('mode', 'socks');
@@ -51,9 +47,7 @@ return view.extend({
 		o.retain = true;
 		o.depends('mode', 'tun');
 		o.rmempty = false;
-		o.description = _(
-			'Only forwarded IPv4 from the selected LAN device is routed through TUN. IPv6 and router DNS are unchanged.'
-		);
+		o.description = _('Only forwarded IPv4 from this device goes through TUN. IPv6 stays as is.');
 		o = s.option(form.Value, 'lan_device', _('LAN device'));
 		o.retain = true;
 		o.depends({ mode: 'tun', route_lan: '1' });
@@ -64,12 +58,10 @@ return view.extend({
 		o.retain = true;
 		o.depends({ mode: 'tun', route_lan: '1' });
 		o.rmempty = false;
-		o.description = _(
-			'Sends this LAN device to a resolver inside the tunnel instead of the local one. Other clients and the router keep their current DNS.'
-		);
+		o.description = _('Only this device uses the resolver inside the tunnel.');
 		o = s.option(form.Value, 'device_name', _('Registration device name'));
 		o.rmempty = false;
-		o.description = _('Apply this name before registering. Changing it does not rename an existing account.');
+		o.description = _('Apply before registering. Changing it does not rename an existing account.');
 		o.validate = function (section, value) {
 			return /^[A-Za-z0-9._-]{1,32}$/.test(value || '')
 				? true
