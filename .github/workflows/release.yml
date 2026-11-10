@@ -60,11 +60,27 @@ jobs:
           for dir in dist/usque-sdk*; do
             [ -d "$dir" ] || continue
             sdk=$(basename "$dir" | sed -n 's/^usque-sdk\([0-9.]*\)-.*/\1/p')
+            # 架构取自 artifact 目录名 usque-sdk<sdk>-<arch>-<sha>，sha 为 40 位 hex
+            arch=$(basename "$dir" | sed -n 's/^usque-sdk[0-9.]*-\(.*\)-[0-9a-f]\{40\}$/\1/p')
             case "$sdk" in
               24.10 | 25.12) target="out/sdk-$sdk" ;;
               *) echo "未知 SDK：$dir" >&2; exit 1 ;;
             esac
-            find "$dir" -maxdepth 1 -type f \( -name '*.ipk' -o -name '*.apk' \) -exec cp {} "$target/" \;
+            [ -n "$arch" ] || { echo "无法从 $dir 解析架构" >&2; exit 1; }
+            # ipk 文件名自带架构，原名拷；apk 文件名不带架构，补 -架构（照 honk 的 release 命名），否则 7 个架构互相覆盖
+            for f in "$dir"/*.ipk; do
+              [ -f "$f" ] || continue
+              cp "$f" "$target/"
+            done
+            for f in "$dir"/*.apk; do
+              [ -f "$f" ] || continue
+              case "$(basename "$f")" in Packages*|APKINDEX*|packages.adb*) continue ;; esac
+              base=$(basename "$f" .apk)
+              case "$base" in
+                *-"$arch") cp "$f" "$target/${base}.apk" ;;
+                *) cp "$f" "$target/${base}-${arch}.apk" ;;
+              esac
+            done
           done
           for sdk in 24.10 25.12; do
             dir="out/sdk-$sdk"
@@ -73,7 +89,8 @@ jobs:
               echo "SDK $sdk 没有产物" >&2
               exit 1
             }
-            (cd "$dir" && sha256sum ./* > SHA256SUMS)
+            # SHA256SUMS 按 SDK 分开命名，两个同名文件 gh release create 上传时会 422
+            (cd "$dir" && sha256sum ./* > "SHA256SUMS-$sdk")
           done
           find out -type f | sort | sed 's|^|  |'
 
@@ -120,12 +137,13 @@ jobs:
               print()
               for name in packages:
                   print('- `' + name + '`')
-              print('- `SHA256SUMS`')
+              print('- `SHA256SUMS-' + sdk + '`')
               print()
-          print('安装前先校验：')
+          print('安装前先校验（按 SDK 用对应的文件）：')
           print()
           print('```sh')
-          print('sha256sum -c SHA256SUMS')
+          print('sha256sum -c SHA256SUMS-24.10  # OpenWrt 24.10')
+          print('sha256sum -c SHA256SUMS-25.12  # OpenWrt 25.12')
           print('```')
           print()
           print('## 已知限制')
@@ -148,5 +166,5 @@ jobs:
             --draft \
             --title "Usque $TAG" \
             --notes-file notes.md \
-            out/sdk-24.10/*.ipk out/sdk-24.10/SHA256SUMS \
-            out/sdk-25.12/*.apk out/sdk-25.12/SHA256SUMS
+            out/sdk-24.10/*.ipk out/sdk-24.10/SHA256SUMS-24.10 \
+            out/sdk-25.12/*.apk out/sdk-25.12/SHA256SUMS-25.12
