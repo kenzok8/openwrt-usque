@@ -489,5 +489,11 @@ msgstr "接入点地址"
 msgid "Leave empty to use the address stored in the account. Change it when the default endpoint is unreachable."
 msgstr "留空则用账户里记录的地址；默认入口连不上时可换成其他 WARP 入口 IP。"
 
+msgid "Auto · use the address stored in the account"
+msgstr "自动 · 使用账户里记录的地址"
+
+msgid "Keep Auto unless the default endpoint is unreachable, then try another WARP entry."
+msgstr "默认入口连不上时再换其他 WARP 入口，平时保持「自动」即可。"
+
 msgid "The endpoint address is not a valid IPv4 address."
 msgstr "接入点地址不是合法的 IPv4。"

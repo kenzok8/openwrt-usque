@@ -59,11 +59,14 @@ return view.extend({
 		o.depends({ mode: 'tun', route_lan: '1' });
 		o.rmempty = false;
 		o.description = _('Only this device uses the resolver inside the tunnel.');
-		o = s.option(form.Value, 'endpoint', _('Endpoint address'));
-		o.datatype = 'ip4addr';
-		o.placeholder = '162.159.198.2';
-		o.rmempty = false;
-		o.description = _('Leave empty to use the address stored in the account. Change it when the default endpoint is unreachable.');
+		o = s.option(form.ListValue, 'endpoint', _('Endpoint address'));
+		o.value('', _('Auto · use the address stored in the account'));
+		[
+			'162.159.198.1', '162.159.198.2', '162.159.198.3',
+			'162.159.192.1', '162.159.193.1', '162.159.195.1', '162.159.204.1'
+		].forEach(function (ip) { o.value(ip, ip); });
+		o.default = '';
+		o.description = _('Keep Auto unless the default endpoint is unreachable, then try another WARP entry.');
 		o = s.option(form.Value, 'device_name', _('Registration device name'));
 		o.rmempty = false;
 		o.description = _('Apply before registering. Changing it does not rename an existing account.');
