@@ -97,19 +97,49 @@ jobs:
       - name: Write draft notes
         env:
           TAG: ${{ steps.tag.outputs.name }}
+          GH_REPO: ${{ github.repository }}
         run: |
           set -eu
           python3 - "$TAG" > notes.md <<'PY'
+          import os
           import pathlib
           import sys
 
           tag = sys.argv[1]
-          rows = []
-          for sdk in ('24.10', '25.12'):
-              fmt = 'IPK' if sdk == '24.10' else 'APK'
-              files = sorted(p for p in (pathlib.Path('out') / ('sdk-' + sdk)).iterdir() if p.is_file())
-              packages = [p.name for p in files if p.suffix in ('.ipk', '.apk')]
-              rows.append((sdk, fmt, packages))
+          base = f'https://github.com/{os.environ["GH_REPO"]}/releases/download/{tag}'
+
+          ARCH_ORDER = [
+              'x86_64', 'aarch64_generic', 'aarch64_cortex-a53', 'aarch64_cortex-a72',
+              'aarch64_cortex-a76', 'arm_cortex-a7_neon-vfpv4', 'arm_cortex-a9',
+          ]
+
+          def link(name):
+              return f'[`{name}`]({base}/{name})'
+
+          def pkg_of(name):
+              for prefix in ('luci-app-usque', 'usque'):
+                  if name.startswith(prefix):
+                      return prefix
+              return 'other'
+
+          def collect(sdk):
+              d = pathlib.Path('out') / f'sdk-{sdk}'
+              return sorted(p.name for p in d.iterdir() if p.is_file() and p.suffix in ('.ipk', '.apk'))
+
+          def split(names):
+              common, by_arch = [], {}
+              for n in names:
+                  if '_all' in n or '-all' in n:
+                      common.append(n)
+                      continue
+                  for a in ARCH_ORDER:
+                      if a in n:
+                          by_arch.setdefault(a, []).append(n)
+                          break
+                  else:
+                      common.append(n)
+              return common, by_arch
+
           print(f'# Usque {tag}')
           print()
           print('> 草稿：修复与改进段落由维护者补齐后再发布。')
@@ -118,7 +148,7 @@ jobs:
           print()
           print('| 项目 | 版本 |')
           print('| --- | --- |')
-          print('| Git tag | ' + tag + ' |')
+          print(f'| Git tag | {tag} |')
           print('| usque 包 | 以包内版本为准，见附件文件名 |')
           print('| 上游核心 | Diniboy1123/usque v4.2.1 |')
           print()
@@ -132,12 +162,32 @@ jobs:
           print()
           print('## 构建与安装')
           print()
-          for sdk, fmt, packages in rows:
+          for sdk, fmt in (('24.10', 'IPK'), ('25.12', 'APK')):
+              common, by_arch = split(collect(sdk))
               print(f'### OpenWrt {sdk}（{fmt}）')
               print()
-              for name in packages:
-                  print('- `' + name + '`')
-              print('- `SHA256SUMS-' + sdk + '`')
+              if common:
+                  print('通用包（所有架构）：')
+                  print()
+                  print('| 包 | 下载 |')
+                  print('| --- | --- |')
+                  for n in common:
+                      print(f'| {pkg_of(n)} | {link(n)} |')
+                  print()
+              if by_arch:
+                  print('按架构下载：')
+                  print()
+                  print('| 架构 | usque | luci-app-usque |')
+                  print('| --- | --- | --- |')
+                  for a in ARCH_ORDER:
+                      if a not in by_arch:
+                          continue
+                      names = by_arch[a]
+                      u = next((n for n in names if pkg_of(n) == 'usque'), None)
+                      l = next((n for n in names if pkg_of(n) == 'luci-app-usque'), None)
+                      print(f'| {a} | {link(u) if u else "-"} | {link(l) if l else "-"} |')
+                  print()
+              print(f'校验文件：[`SHA256SUMS-{sdk}`]({base}/SHA256SUMS-{sdk})')
               print()
           print('安装前先校验（按 SDK 用对应的文件）：')
           print()
